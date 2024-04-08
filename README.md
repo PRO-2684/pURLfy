@@ -75,7 +75,7 @@ The format of the rules `rules` is as follows:
 `<domain>`, `<path>`: The domain and path, such as `example.com/` and `path/to/page` (Note that the leading `/` is removed).
 
 - The basic behavior is like paths on Unix file systems.
-    - If not ending with `/`, its value will be treated as a [rule](#-rule)
+    - If not ending with `/`, its value will be treated as a [rule](#-a-single-rule).
     - If ending with `/`, there's more paths under it (theoretically, you can nest infinitely)
 - If it's an empty string `""`, it will be treated as a **FallBack** rule: this rule will be used when no other rules are matched at this level.
 - If there's multiple rules matched, the rule with the **longest matched** path will be used.
@@ -84,7 +84,7 @@ The format of the rules `rules` is as follows:
 
 A simple example with comments showing the URLs that can be matched:
 
-```json
+```jsonc
 {
     "example.com/": {
         "a/b/c": {
@@ -219,7 +219,7 @@ Under Redirect mode, pURLfy will:
 
 Under Lambda mode, pURLfy will try to execute the lambda function specified in `lambda` and use the result as the new URL. The function body should accept a single `URL` parameter `url` and return a new `URL` object. For example:
 
-```json
+```jsonc
 {
     "example.com": {
         "description": "示例",

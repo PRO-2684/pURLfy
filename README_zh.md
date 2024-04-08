@@ -219,7 +219,7 @@ TODO
 
 匿名函数模式下，pURLfy 会尝试执行 `lambda` 字段中指定的函数体，并将其返回值作为新的 URL。此函数体应接受一个类型为 `URL` 的参数 `url`，并返回一个新的 `URL` 对象。例如如下规则：
 
-```json
+```jsonc
 {
     "example.com": {
         "description": "示例",
