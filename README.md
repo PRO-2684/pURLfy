@@ -224,7 +224,7 @@ Under Specific Parameter mode, pURLfy will:
 Currently supported `decode` functions are:
 
 - `url`: URL decoding (`decodeURIComponent`)
-- `base64`: Base64 decoding (`atob`)
+- `base64`: Base64 decoding (`decodeURIComponent(escape(atob(s)))`)
 
 #### 🟣 Regex Mode `regex`
 

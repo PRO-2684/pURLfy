@@ -224,7 +224,7 @@ new Purlfy({
 `decode` 目前支持如下值:
 
 - `url`: 解码 URL 编码 (`decodeURIComponent`)
-- `base64`: 解码 Base64 编码 (`atob`)
+- `base64`: 解码 Base64 编码 (`decodeURIComponent(escape(atob(s)))`)
 
 #### 🟣 正则模式 `regex`
 
