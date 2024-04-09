@@ -2,7 +2,7 @@ class Purlfy extends EventTarget {
     redirectEnabled = false;
     lambdaEnabled = false;
     maxIterations = 5;
-    log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
+    #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
     #paramDecoders = {
         "url": decodeURIComponent,
         "base64": atob,
@@ -20,8 +20,9 @@ class Purlfy extends EventTarget {
         super();
         this.redirectEnabled = options?.redirectEnabled ?? this.redirectEnabled;
         this.lambdaEnabled = options?.lambdaEnabled ?? this.lambdaEnabled;
+        this.maxIterations = options?.maxIterations ?? this.maxIterations;
         this.#statistics = options?.statistics ?? this.#statistics;
-        this.log = options?.log ?? this.log;
+        this.#log = options?.log ?? this.#log;
     }
 
     clearStatistics() {
@@ -37,6 +38,10 @@ class Purlfy extends EventTarget {
 
     clearRules() {
         this.#rules = {};
+    }
+
+    getStatistics() {
+        return this.#statistics;
     }
 
     importRules(rules) {
@@ -94,14 +99,14 @@ class Purlfy extends EventTarget {
         }));
     }
 
-    async purifyURL(originalUrl) { // Purify the given URL based on `rules`
+    async purify(originalUrl) { // Purify the given URL based on `rules`
         let shallContinue = true;
         let url = originalUrl;
         let firstRule = null;
         let iteration = 0;
-        this.log("Purifying URL:", url);
+        this.#log("Purifying URL:", url);
         while (shallContinue && iteration++ < this.maxIterations) {
-            const logi = (...args) => this.log(`[#${iteration}]`, ...args);
+            const logi = (...args) => this.#log(`[#${iteration}]`, ...args);
             let urlObj;
             if (URL.canParse(url)) {
                 urlObj = new URL(url);
@@ -215,7 +220,7 @@ class Purlfy extends EventTarget {
             url = urlObj.href;
         }
         if (originalUrl === url) { // No changes made
-            this.log("No changes made.");
+            this.#log("No changes made.");
             return {
                 url: url,
                 rule: `* ${firstRule.description} by ${firstRule.author}`

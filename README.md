@@ -12,7 +12,7 @@ The ultimate URL purifier.
 Purify URL: Remove redundant tracking parameters, skip redirecting pages, and extract the link that really matters.
 
 - ⚡ Fast: Purify URLs quickly and efficiently. (Time complexity is $O(n)$, where $n$ is the count of `/` in the URL path.)
-- 🪶 Zero dependency: No dependencies are required to run pURLfy.
+- 🪶 Lightweight: Zero-dependency; The minified script is only `2.1kb`.
 - 📃 Rule-based: Perform purification based on rules, making it more flexible.
 - 🔁 Iterative purification: If the URL still contains tracking parameters after a single purification (e.g. URLs returned by `redirect` rules), it will continue to be purified.
 - 📊 Statistics: You can track statistics of the purification process, including the number of links purified, the number of parameters removed, the number of URLs decoded, the number of URLs redirected, and the number of characters deleted, etc.
@@ -22,7 +22,7 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 ### 🚀 Quick Start
 
 ```js
-// Somewhat import Purlfy from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.js
+// Somewhat import `Purlfy` class from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js
 const purifier = new Purlfy({ // Instantiate a Purlfy object
     redirectEnabled: true,
     lambdaEnabled: true,
@@ -34,12 +34,51 @@ purifier.importRules(additionalRules);
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
     console.log("Statistics changed to:", e.detail);
 });
-purifier.purifyURL("https://example.com/?utm_source=123").then(console.log); // Purify a URL
+purifier.purify("https://example.com/?utm_source=123").then(console.log); // Purify a URL
 ```
 
 ### 📚 API
 
-TODO
+#### Constructor
+
+```js
+new Purlfy({
+    redirectEnabled: Boolean, // Enable the redirect mode (default: false)
+    lambdaEnabled: Boolean, // Enable the lambda mode (default: false)
+    maxIterations: Number, // Maximum number of iterations (default: 5)
+    statistics: { // Initial statistics
+        url: Number, // Number of links purified
+        param: Number, // Number of parameters removed
+        decoded: Number, // Number of URLs decoded (`param` mode)
+        redirected: Number, // Number of URLs redirected (`redirect` mode)
+        char: Number, // Number of characters deleted
+    },
+    log: Function, // Log function (default: `console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m")`)
+})
+```
+
+#### Methods
+
+- `importRules(rules: object): void`: Import rules.
+- `purify(url: string): Promise<object>`: Purify a URL.
+    - `url`: The URL to be purified.
+    - Returns a `Promise` that resolves to an object containing:
+        - `url: string`: The purified URL.
+        - `rule: string`: The matched rule.
+- `clearStatistics(): void`: Clear statistics.
+- `clearRules(): void`: Clear all imported rules.
+- `getStatistics(): object`: Get statistics.
+- `addEventListener("statisticschange", callback: function): void`: Add an event listener for statistics change.
+    - The `callback` function will receive an `CustomEvent` object with the `detail` property containing the new statistics.
+- `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
+
+#### Properties
+
+You can change these properties after instantiation, and they will take effect for the next call to `purify`.
+
+- `redirectEnabled: Boolean`: Whether the redirect mode is enabled.
+- `lambdaEnabled: Boolean`: Whether the lambda mode is enabled.
+- `maxIterations: Number`: Maximum number of iterations.
 
 ## 📖 Rules
 

@@ -12,7 +12,7 @@
 净化 URL：去除多余的跟踪参数，跳过重定向界面，提取真正重要的链接。
 
 - ⚡ 快速：快速高效地净化 URL。 (时间复杂度为 $O(n)$，其中 $n$ 是 URL 路径中 `/` 的数量)
-- 🪶 零依赖：运行 pURLfy 无需任何依赖。
+- 🪶 轻量：零依赖；最小化脚本仅 `2.1kb`。
 - 📃 基于规则：根据规则净化，更为灵活。
 - 🔁 迭代式净化：若单次净化后的 URL 仍包含跟踪参数 (例如 `redirect` 规则返回的 URL)，将继续净化。
 - 📊 统计数据：您可以跟踪净化过程中的统计数据，包括净化的链接数量、移除的参数数量、解码的网址数量、重定向的网址数量、删除的字符数量等。
@@ -22,7 +22,7 @@
 ### 🚀 快速开始
 
 ```js
-// 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.js 导入 Purlfy
+// 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js 导入 `Purlfy` 类
 const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     redirectEnabled: true,
     lambdaEnabled: true,
@@ -34,12 +34,51 @@ purifier.importRules(rules); // 导入规则
 purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
     console.log("Statistics changed to:", e.detail);
 });
-purifier.purifyURL("https://example.com/?utm_source=123").then(console.log); // 净化一个 URL
+purifier.purify("https://example.com/?utm_source=123").then(console.log); // 净化一个 URL
 ```
 
 ### 📚 API
 
-TODO
+#### 构造函数
+
+```js
+new Purlfy({
+    redirectEnabled: Boolean, // 是否启用重定向模式 (默认: false)
+    lambdaEnabled: Boolean, // 是否启用匿名函数模式 (默认: false)
+    maxIterations: Number, // 最大迭代次数 (默认: 5)
+    statistics: { // 初始统计数据
+        url: Number, // 净化的网址数量
+        param: Number, // 移除的参数数量
+        decoded: Number, // 解码的网址数量 (`param` 模式)
+        redirected: Number, // 重定向的网址数量 (`redirect` 模式)
+        char: Number, // 移除的字符数量
+    },
+    log: Function, // 日志函数 (默认: `console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m")`)
+})
+```
+
+#### 方法
+
+- `importRules(rules: object): void`: 导入规则
+- `purify(url: string): Promise<object>`: 净化一个 URL
+    - `url`: 要净化的 URL
+    - 返回值: `Promise`，解析为一个对象，包含:
+        - `url: string`: 净化后的 URL
+        - `rule: string`: 匹配到的规则
+- `clearStatistics(): void`: 清空统计数据
+- `clearRules(): void`: 清空所有已导入的规则
+- `getStatistics(): object`: 获取统计数据
+- `addEventListener("statisticschange", callback: function): void`: 添加统计数据变化的事件监听器
+    - `callback` 函数会接收一个 `CustomEvent` 对象，其中 `detail` 属性为新的统计数据
+- `removeEventListener("statisticschange", callback: function): void`: 移除统计数据变化的事件监听器
+
+#### 属性
+
+你可以在初始化后更改下面的属性，它们将在下次调用 `purify` 时生效。
+
+- `redirectEnabled: Boolean`: 是否启用重定向模式
+- `lambdaEnabled: Boolean`: 是否启用匿名函数模式
+- `maxIterations: Number`: 最大迭代次数
 
 ## 📖 规则
 
