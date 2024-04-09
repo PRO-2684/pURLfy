@@ -21,7 +21,7 @@ class Purlfy extends EventTarget {
         this.redirectEnabled = options?.redirectEnabled ?? this.redirectEnabled;
         this.lambdaEnabled = options?.lambdaEnabled ?? this.lambdaEnabled;
         this.maxIterations = options?.maxIterations ?? this.maxIterations;
-        this.#statistics = options?.statistics ?? this.#statistics;
+        Object.assign(this.#statistics, options?.statistics);
         this.#log = options?.log ?? this.#log;
     }
 
