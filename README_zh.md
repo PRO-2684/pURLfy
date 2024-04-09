@@ -69,7 +69,7 @@ new Purlfy({
 - `clearRules(): void`: 清空所有已导入的规则
 - `getStatistics(): object`: 获取统计数据
 - `addEventListener("statisticschange", callback: function): void`: 添加统计数据变化的事件监听器
-    - `callback` 函数会接收一个 `CustomEvent` 对象，其中 `detail` 属性为新的统计数据
+    - `callback` 函数会接收一个 `Event` 对象，其中 `detail` 属性为新的统计数据
 - `removeEventListener("statisticschange", callback: function): void`: 移除统计数据变化的事件监听器
 
 #### 属性

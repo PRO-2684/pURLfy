@@ -69,7 +69,7 @@ new Purlfy({
 - `clearRules(): void`: Clear all imported rules.
 - `getStatistics(): object`: Get statistics.
 - `addEventListener("statisticschange", callback: function): void`: Add an event listener for statistics change.
-    - The `callback` function will receive an `CustomEvent` object with the `detail` property containing the new statistics.
+    - The `callback` function will receive an `Event` object with the `detail` property containing the new statistics.
 - `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
 
 #### Properties
