@@ -94,7 +94,7 @@ class Purlfy extends EventTarget {
     }
 
     #onStatisticsChange() {
-        this.dispatchEvent(new CustomEvent("statisticschange", {
+        this.dispatchEvent(new Event("statisticschange", {
             detail: this.#statistics
         }));
     }
