@@ -11,34 +11,25 @@
 
 净化 URL：去除多余的跟踪参数，跳过重定向界面，提取真正重要的链接。
 
-- [x] 基于规则：根据规则净化，更为灵活。
-- [x] 迭代式净化：若单次净化后的 URL 仍包含跟踪参数 (例如 `redirect` 规则返回的 URL)，将继续净化。
-- [x] 统计数据：您可以查看净化过程中的统计数据，包括净化的链接数量、移除的参数数量、解码的网址数量、重定向的网址数量、删除的字符数量等。
+- ⚡ 快速：快速高效地净化 URL。 (时间复杂度为 $O(n)$，其中 $n$ 是 URL 路径中 `/` 的数量)
+- 🪶 零依赖：运行 pURLfy 无需任何依赖。
+- 📃 基于规则：根据规则净化，更为灵活。
+- 🔁 迭代式净化：若单次净化后的 URL 仍包含跟踪参数 (例如 `redirect` 规则返回的 URL)，将继续净化。
+- 📊 统计数据：您可以跟踪净化过程中的统计数据，包括净化的链接数量、移除的参数数量、解码的网址数量、重定向的网址数量、删除的字符数量等。
 
 ## 🤔 使用
 
 ### 🚀 快速开始
 
 ```js
+// 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.js 导入 Purlfy
 const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     redirectEnabled: true,
     lambdaEnabled: true,
 });
-const rules = { // 规则
-    "": {
-        "description": "Fallback",
-        "mode": "black",
-        "params": [
-            "utm_source",
-            "utm_medium",
-            "utm_campaign",
-            "utm_term",
-            "utm_content"
-        ],
-        "author": "PRO-2684"
-    },
-    // ...
-};
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // 规则
+const additionalRules = {}; // 你也可以添加自己的规则
+purifier.importRules(additionalRules);
 purifier.importRules(rules); // 导入规则
 purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
     console.log("Statistics changed to:", e.detail);
@@ -72,23 +63,23 @@ TODO
 
 ### ✅ 路径匹配
 
-`<domain>`, `<path>`: 域名和路径，例如 `example.com/`, `path/to/page` (注意去除开头的 `/`)。
+`<domain>`, `<path>`: 域名和一部分路径，例如 `example.com/`, `path/` 和 `page` (注意去除开头的 `/`)。以下是对它们的解释:
 
 - 基础行为与 Unix 文件系统路径类似
     - 若不以 `/` 结尾，表示其值就是一条 [规则](#-单条规则)
-    - 若以 `/` 结尾，表示其下有更多子路径 (理论上可以无限嵌套)
+    - 若以 `/` 结尾，表示其下有更多子路径，可以与“文件夹”类比 (理论上可以无限嵌套)
+    - `<domain>`, `<path>` *中间* 不可以含有 `/`
 - 若为 `""`，则表示作为 **FallBack** 规则：当此层级没有匹配到其他规则时使用此规则
 - 当有多个规则匹配时，会优先使用 **最长匹配** 的规则
 - 若想要某条规则匹配域名下所有路径，则可以省略 `<path>`，但是注意别忘了把域名后的 `/` 去除。
-- 你也可以将其合并为一个 `<domain>/<path>`，但是不推荐这样做。
 
 一个简单的例子，注释给出了可以匹配的网址:
 
 ```jsonc
 {
     "example.com/": {
-        "a/b/c": {
-            // 这里的规则会匹配 "example.com/a/b/c"
+        "a": {
+            // 这里的规则会匹配 "example.com/a"
         },
         "path/": {
             "to/": {
@@ -98,6 +89,9 @@ TODO
                 "": {
                     // 这里的规则会匹配 "example.com/path/to" 除 "page" 以外的所有子路径
                 }
+            },
+            "": {
+                // 这里的规则会匹配 "example.com/path" 除 "to" 以外的所有子路径
             }
         },
         "": {
@@ -118,13 +112,18 @@ TODO
 ```jsonc
 {
     "example.com/": {
-        "path/to/page/": { // 以 `/` 结尾的会被认为下面有子路径，正确做法是移除末尾的 `/`
-            // 尝试匹配 "example.com/path/to/page" 的规则
+        "path/": { // 以 `/` 结尾的会被认为下面有子路径，正确做法是移除末尾的 `/`
+            // 尝试匹配 "example.com/path" 的规则
         }
     },
     "example.org": { // 不以 `/` 结尾的会被认为是一条规则，正确做法是末尾加上 `/`
-        "path/to/page": {
-            // 尝试匹配 "example.org/path/to/page" 的规则
+        "page": {
+            // 尝试匹配 "example.org/page" 的规则
+        }
+    },
+    "example.net/": {
+        "path/to/page": { // 中间不可以含有 `/`，正确做法是嵌套
+            // 尝试匹配 "example.net/path/to/page" 的规则
         }
     }
 }

@@ -43,6 +43,10 @@ class Purlfy extends EventTarget {
         Object.assign(this.#rules, rules);
     }
 
+    #udfOrType(value, type) { // If the given value is of the given type or undefined
+        return value === undefined || typeof value === type;
+    }
+
     #validRule(rule) { // Check if the given rule is valid
         if (!rule || !rule.mode || !rule.description || !rule.author) return false;
         switch (rule.mode) {
@@ -50,58 +54,38 @@ class Purlfy extends EventTarget {
             case "black":
                 return Array.isArray(rule.params);
             case "param":
-                return Array.isArray(rule.params) && Array.isArray(rule.decode);
+                return Array.isArray(rule.params) && (rule.decode === undefined || Array.isArray(rule.decode)) && this.#udfOrType(rule.continue, "boolean");
             case "regex":
                 return false; // Not implemented yet
             case "redirect":
-                return this.redirectEnabled;
+                return this.redirectEnabled && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
-                return this.lambdaEnabled && typeof rule.lambda === "string";
+                return this.lambdaEnabled && typeof rule.lambda === "string" && this.#udfOrType(rule.continue, "boolean");
             default:
                 return false;
         }
     }
 
-    #matchRule(parts, currentRules) { // Recursively match the longest rule for the given URL parts
-        let matchedRule = null; // Matched rule
-        let maxMatchedParts = 0; // Matched parts count
-        for (const rulePath in currentRules) {
-            if (rulePath === "") continue; // Fallback rule should be handled last
-            const ruleParts = rulePath.split("/");
-            const effectiveRuleLength = ruleParts[ruleParts.length - 1] === "" ? ruleParts.length - 1 : ruleParts.length; // Ignore trailing slash
-            if (effectiveRuleLength > parts.length) { // Impossible to match
-                continue;
+    #matchRule(parts) { // Iteratively match the longest rule for the given URL parts
+        let fallbackRule = null; // Most precise fallback rule
+        let currentRules = this.#rules;
+        for (const part of parts) {
+            if (currentRules.hasOwnProperty("")) {
+                fallbackRule = currentRules[""];
             }
-            let matchedParts = 0;
-            let isMatched = true;
-            let nestedMatchedRule = null;
-            for (let i = 0; i < ruleParts.length; i++) {
-                if (ruleParts[i] === parts[i]) {
-                    matchedParts++;
-                } else if (ruleParts[i] === "" && i === ruleParts.length - 1) { // Ending with a slash - recursive matching
-                    const nextRules = currentRules[rulePath];
-                    const nextPathParts = parts.slice(i);
-                    const [nextRule, nextMatchedParts] = this.#matchRule(nextPathParts, nextRules);
-                    if (nextRule) {
-                        matchedParts += nextMatchedParts;
-                        nestedMatchedRule = nextRule;
-                    } else {
-                        isMatched = false;
-                    }
-                } else {
-                    isMatched = false;
-                    break;
+            if (currentRules.hasOwnProperty(part + "/")) {
+                currentRules = currentRules[part + "/"];
+            } else if (currentRules.hasOwnProperty(part)) {
+                const rule = currentRules[part];
+                if (this.#validRule(rule)) {
+                    return rule;
                 }
             }
-            const possibleRule = nestedMatchedRule ?? currentRules[rulePath];
-            if (isMatched && matchedParts > maxMatchedParts && this.#validRule(possibleRule)) {
-                matchedRule = possibleRule;
-                maxMatchedParts = matchedParts;
-            }
         }
-        matchedRule ??= currentRules[""]; // Fallback
-        // Returns the matched rule and matched parts count
-        return [matchedRule, maxMatchedParts];
+        if (this.#validRule(fallbackRule)) {
+            return fallbackRule;
+        }
+        return null;
     }
 
     #onStatisticsChange() {
@@ -132,7 +116,7 @@ class Purlfy extends EventTarget {
             }
             const hostAndPath = urlObj.host + urlObj.pathname;
             const parts = hostAndPath.split("/").filter(part => part !== "");
-            const rule = this.#matchRule(parts, rules)[0];
+            const rule = this.#matchRule(parts);
             if (!rule) { // No matching rule found
                 logi(`No matching rule found for ${url}.`);
                 return url;

@@ -11,35 +11,26 @@ The ultimate URL purifier.
 
 Purify URL: Remove redundant tracking parameters, skip redirecting pages, and extract the link that really matters.
 
-- [x] Rule-based: Perform purification based on rules, making it more flexible.
-- [x] Iterative purification: If the URL still contains tracking parameters after a single purification (e.g. URLs returned by `redirect` rules), it will continue to be purified.
-- [x] Statistics: You can view statistics of the purification process, including the number of links purified, the number of parameters removed, the number of URLs decoded, the number of URLs redirected, and the number of characters deleted, etc.
+- ⚡ Fast: Purify URLs quickly and efficiently. (Time complexity is $O(n)$, where $n$ is the count of `/` in the URL path.)
+- 🪶 Zero dependency: No dependencies are required to run pURLfy.
+- 📃 Rule-based: Perform purification based on rules, making it more flexible.
+- 🔁 Iterative purification: If the URL still contains tracking parameters after a single purification (e.g. URLs returned by `redirect` rules), it will continue to be purified.
+- 📊 Statistics: You can track statistics of the purification process, including the number of links purified, the number of parameters removed, the number of URLs decoded, the number of URLs redirected, and the number of characters deleted, etc.
 
 ## 🤔 Usage
 
 ### 🚀 Quick Start
 
 ```js
+// Somewhat import Purlfy from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.js
 const purifier = new Purlfy({ // Instantiate a Purlfy object
     redirectEnabled: true,
     lambdaEnabled: true,
 });
-const rules = { // Rules
-    "": {
-        "description": "Fallback",
-        "mode": "black",
-        "params": [
-            "utm_source",
-            "utm_medium",
-            "utm_campaign",
-            "utm_term",
-            "utm_content"
-        ],
-        "author": "PRO-2684"
-    },
-    // ...
-};
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // Rules
 purifier.importRules(rules); // Import rules
+const additionalRules = {}; // You can also add your own rules
+purifier.importRules(additionalRules);
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
     console.log("Statistics changed to:", e.detail);
 });
@@ -72,23 +63,23 @@ The format of the rules `rules` is as follows:
 
 ### ✅ Path Matching
 
-`<domain>`, `<path>`: The domain and path, such as `example.com/` and `path/to/page` (Note that the leading `/` is removed).
+`<domain>`, `<path>`: The domain and a part of path, such as `example.com/`, `path/` and `page` (Note that the leading `/` is removed). Here's an explanation of them:
 
 - The basic behavior is like paths on Unix file systems.
     - If not ending with `/`, its value will be treated as a [rule](#-a-single-rule).
-    - If ending with `/`, there's more paths under it (theoretically, you can nest infinitely)
+    - If ending with `/`, there's more paths under it, like "folders" (theoretically, you can nest infinitely)
+    - `/` is not allowed in the *middle* of `<domain>` or `<path>`.
 - If it's an empty string `""`, it will be treated as a **FallBack** rule: this rule will be used when no other rules are matched at this level.
 - If there's multiple rules matched, the rule with the **longest matched** path will be used.
 - If you want a rule to match all paths under a domain, you can omit `<path>`, but remember to remove the `/` after the domain.
-- You can also combine them as `<domain>/<path>`, but it's not recommended.
 
 A simple example with comments showing the URLs that can be matched:
 
 ```jsonc
 {
     "example.com/": {
-        "a/b/c": {
-            // The rule here will match "example.com/a/b/c"
+        "a": {
+            // The rule here will match "example.com/a"
         },
         "path/": {
             "to/": {
@@ -98,6 +89,9 @@ A simple example with comments showing the URLs that can be matched:
                 "": {
                     // The rule here will match "example.com/path/to", excluding "page" under it
                 }
+            },
+            "": {
+                // The rule here will match "example.com/path", excluding "to" under it
             }
         },
         "": {
@@ -118,13 +112,18 @@ Here's an **erroneous example**:
 ```jsonc
 {
     "example.com/": {
-        "path/to/page/": { // Path ending with `/` will be treated as a "directory", thus you should remove the trailing `/`
-            // Attempting to match "example.com/path/to/page"
+        "path/": { // Path ending with `/` will be treated as a "directory", thus you should remove the trailing `/`
+            // Attempting to match "example.com/path"
         }
     },
     "example.org": { // Path not ending with `/` will be treated as a rule, thus you should add a trailing `/`
-        "path/to/page": {
-            // Attempting to match "example.org/path/to/page"
+        "page": {
+            // Attempting to match "example.org/page"
+        }
+    },
+    "example.net/": {
+        "path/to/page": { // Can't contain `/` in the middle - you should nest them
+            // Attempting to match "example.net/path/to/page"
         }
     }
 }
