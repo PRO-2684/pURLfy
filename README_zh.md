@@ -271,3 +271,9 @@ TODO
 ```
 
 那么如果 URL `https://example.com/?key=123` 匹配到了此规则，则会删除 `key` 参数。在此操作后，因为 `continue` 被设置为 `false`，函数返回的 URL 不会被再次执行净化。当然，这并非一个很好的例子，因为这完全可以通过 [黑名单模式](#-黑名单模式-black) 来实现。
+
+## 🎉 鸣谢
+
+- 感谢 [Tarnhelm](https://tarnhelm.project.ac.cn/) 提供的规则文件以及为 pURLfy 提供最初的灵感。
+- 感谢 GreasyFork 上的 [这个脚本](https://greasyfork.org/scripts/412612)，为 pURLfy 提供了一些规则。
+- 感谢 [SearXNG](https://github.com/searxng/searxng/blob/f1a148f53e9fbd10e95baa442b40327732259f25/searx/engines/bing.py#L148) 提供的 Bing 的净化规则。

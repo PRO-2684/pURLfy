@@ -470,6 +470,16 @@
 			"author": "PRO-2684"
 		}
 	},
+	"www.bing.com/": {
+		"ck/": {
+			"a": {
+				"description": "Bing 搜索结果",
+				"mode": "lambda",
+				"lambda": "const urlSafe = url.searchParams.get('u').slice(2); const encoded = urlSafe.replaceAll('_', '/').replaceAll('-', '+'); let decoded = atob(encoded); if (!URL.canParse(decoded)) decoded = 'https://www.bing.com' + (decoded.startsWith('/') ? '' : '/') + decoded; return new URL(decoded);",
+				"author": "PRO-2684"
+			}
+		}
+	},
 	"www.chinaz.com/": {
 		"go.shtml": {
 			"description": "站长之家外链",
