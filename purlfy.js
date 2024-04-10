@@ -206,10 +206,10 @@ class Purlfy extends EventTarget {
                     try {
                         const lambda = new Function("url", rule.lambda);
                         urlObj = lambda(urlObj);
+                        shallContinue = rule.continue ?? true;
                     } catch (e) {
                         logi("Error executing lambda:", e);
                     }
-                    shallContinue = rule.continue ?? true;
                     break;
                 }
                 default: {
