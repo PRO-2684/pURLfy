@@ -32,7 +32,7 @@ const additionalRules = {}; // 你也可以添加自己的规则
 purifier.importRules(additionalRules);
 purifier.importRules(rules); // 导入规则
 purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
-    console.log("Statistics changed to:", e.detail);
+    console.log("Statistics changed to:", e.detail || purifier.getStatistics());
 });
 purifier.purify("https://example.com/?utm_source=123").then(console.log); // 净化一个 URL
 ```
@@ -69,7 +69,8 @@ new Purlfy({
 - `clearRules(): void`: 清空所有已导入的规则
 - `getStatistics(): object`: 获取统计数据
 - `addEventListener("statisticschange", callback: function): void`: 添加统计数据变化的事件监听器
-    - `callback` 函数会接收一个 `Event` 对象，其中 `detail` 属性为新的统计数据
+    - 根据平台是否支持，`callback` 函数会接收一个 `CustomEvent` / `Event` 对象
+    - 若支持 `CustomEvent`，则其 `detail` 属性为新的统计数据
 - `removeEventListener("statisticschange", callback: function): void`: 移除统计数据变化的事件监听器
 
 #### 属性
@@ -217,14 +218,15 @@ new Purlfy({
 取特定参数模式下，pURLfy 会:
 
 1. 依次尝试取出 `params` 中指定的参数，直到匹配到第一个存在的参数
-2. 使用 `decode` 数组中指定的解码函数依次对参数值进行解码 (若 `decode` 值无效，则跳过这个解码函数)
+2. 使用 `decode` 数组中指定的解码函数依次对参数值进行解码 (若任一 `decode` 值无效或执行出错，则认定失败，返回原 URL)
 3. 将最终的结果作为新的 URL
 4. 若 `continue` 未被设置为 `false`，则再次净化新的 URL
 
-`decode` 目前支持如下值:
+部分解码函数支持传入参数，只需用 `:` 分隔即可：`func:arg1:arg2...:argn`。目前支持的解码函数如下:
 
-- `url`: 解码 URL 编码 (`decodeURIComponent`)
-- `base64`: 解码 Base64 编码 (`decodeURIComponent(escape(atob(s)))`)
+- `url`: URL 解码 (`decodeURIComponent`)
+- `base64`: Base64 解码 (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
+- `slice:start:end`: 截取字符串 (`s.slice(start, end)`)，`start` 和 `end` 会被转换为整数
 
 #### 🟣 正则模式 `regex`
 

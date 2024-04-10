@@ -32,7 +32,7 @@ purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(additionalRules);
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
-    console.log("Statistics changed to:", e.detail);
+    console.log("Statistics changed to:", e.detail || purifier.getStatistics());
 });
 purifier.purify("https://example.com/?utm_source=123").then(console.log); // Purify a URL
 ```
@@ -69,7 +69,8 @@ new Purlfy({
 - `clearRules(): void`: Clear all imported rules.
 - `getStatistics(): object`: Get statistics.
 - `addEventListener("statisticschange", callback: function): void`: Add an event listener for statistics change.
-    - The `callback` function will receive an `Event` object with the `detail` property containing the new statistics. (`detail` might not work on nodejs - call `getStatistics`)
+    - The `callback` function will receive an `CustomEvent` / `Event` object based on whether the platform supports it.
+    - If platform supports `CustomEvent`, the `detail` property of the event object will contain the new statistics.
 - `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
 
 #### Properties
@@ -217,14 +218,15 @@ Under Blacklist mode, the parameters specified in `params` will be removed, and 
 Under Specific Parameter mode, pURLfy will:
 
 1. Attempt to extract the parameters specified in `params` in order, until the first existing parameter is matched.
-2. Decode the parameter value using the decoding functions specified in the `decode` array in order (if the `decode` value is invalid, this decoding function will be skipped).
+2. Decode the parameter value using the decoding functions specified in the `decode` array in order (if any `decode` value is invalid or throws an error, it is considered a failure and the original URL is returned).
 3. Use the final result as the new URL.
 4. If `continue` is not set to `false`, purify the new URL again.
 
-Currently supported `decode` functions are:
+Some decoding functions support parameters, simply append them to the function name separated by a colon (`:`): `func:arg1:arg2...:argn`. The following decoding functions are currently supported:
 
 - `url`: URL decoding (`decodeURIComponent`)
-- `base64`: Base64 decoding (`decodeURIComponent(escape(atob(s)))`)
+- `base64`: Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
+- `slice:start:end`: String slicing (`s.slice(start, end)`), `start` and `end` will be converted to integers
 
 #### 🟣 Regex Mode `regex`
 
