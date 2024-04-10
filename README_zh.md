@@ -21,6 +21,8 @@
 
 ### 🚀 快速开始
 
+在我们的 [示例页面](https://pro-2684.github.io/?page=purlfy) 上亲自体验！
+
 ```js
 // 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js 导入 `Purlfy` 类
 const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
