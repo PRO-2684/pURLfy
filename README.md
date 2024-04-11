@@ -21,7 +21,7 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 
 ### 🚀 Quick Start
 
-Try it out at our [demo page](https://pro-2684.github.io/?page=purlfy)!
+Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out with our Telegram bot [@purlfy_bot](https://t.me/purlfy_bot)!
 
 ```js
 // Somewhat import `Purlfy` class from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js

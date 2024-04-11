@@ -21,7 +21,7 @@
 
 ### 🚀 快速开始
 
-在我们的 [示例页面](https://pro-2684.github.io/?page=purlfy) 上亲自体验！
+访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，或者通过我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot) 来体验！
 
 ```js
 // 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js 导入 `Purlfy` 类
