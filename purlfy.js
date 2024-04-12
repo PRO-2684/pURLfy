@@ -254,8 +254,10 @@ class Purlfy extends EventTarget {
             [urlObj, shallContinue] = await this.#applyRule(urlObj, rule, logi);
             logi("Purified URL:", urlObj.href);
         }
-        firstRule && this.#statistics.url++; // Increment URL count if a rule was applied
-        this.#onStatisticsChange();
+        if (firstRule) { // Increment statistics only if a rule was applied
+            this.#statistics.url++;
+            this.#onStatisticsChange();
+        }
         return {
             url: urlObj.href,
             rule: firstRule ? `${firstRule.description} by ${firstRule.author}` : "N/A"
