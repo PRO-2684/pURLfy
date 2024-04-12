@@ -230,39 +230,35 @@ class Purlfy extends EventTarget {
             urlObj = new URL(originalUrl);
         } else {
             log(`Cannot parse URL ${originalUrl}`);
-            return originalUrl;
+            return {
+                url: originalUrl,
+                rule: "N/A"
+            }
         }
         while (shallContinue && iteration++ < this.maxIterations) {
             const logi = (...args) => this.#log(`[#${iteration}]`, ...args);
             const protocol = urlObj.protocol;
             if (protocol !== "http:" && protocol !== "https:") { // Not a valid HTTP URL
                 logi(`Not a HTTP URL: ${urlObj.href}`);
-                return urlObj.href;
+                break;
             }
             const hostAndPath = urlObj.host + urlObj.pathname;
             const parts = hostAndPath.split("/").filter(part => part !== "");
             const rule = this.#matchRule(parts);
             if (!rule) { // No matching rule found
                 logi(`No matching rule found for ${urlObj.href}.`);
-                return urlObj.href;
+                break;
             }
             firstRule ??= rule;
             logi(`Matching rule: ${rule.description} by ${rule.author}`);
             [urlObj, shallContinue] = await this.#applyRule(urlObj, rule, logi);
             logi("Purified URL:", urlObj.href);
         }
-        if (originalUrl === urlObj.href) { // No changes made
-            this.#log("No changes made.");
-            return {
-                url: originalUrl,
-                rule: `* ${firstRule.description} by ${firstRule.author}`
-            };
-        }
-        this.#statistics.url++;
+        firstRule && this.#statistics.url++; // Increment URL count if a rule was applied
         this.#onStatisticsChange();
         return {
             url: urlObj.href,
-            rule: `${firstRule.description} by ${firstRule.author}`
+            rule: firstRule ? `${firstRule.description} by ${firstRule.author}` : "N/A"
         };
     }
 }
