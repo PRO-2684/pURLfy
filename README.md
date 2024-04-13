@@ -12,7 +12,7 @@ The ultimate URL purifier.
 Purify URL: Remove redundant tracking parameters, skip redirecting pages, and extract the link that really matters.
 
 - ⚡ Fast: Purify URLs quickly and efficiently. (Time complexity is $O(n)$, where $n$ is the count of `/` in the URL path.)
-- 🪶 Lightweight: Zero-dependency; The minified script is only `2.8kb`.
+- 🪶 Lightweight: Zero-dependency; Minified script less than 3kb.
 - 📃 Rule-based: Perform purification based on rules, making it more flexible.
 - 🔁 Iterative purification: If the URL still contains tracking parameters after a single purification (e.g. URLs returned by `redirect` rules), it will continue to be purified.
 - 📊 Statistics: You can track statistics of the purification process, including the number of links purified, the number of parameters removed, the number of URLs decoded, the number of URLs redirected, and the number of characters deleted, etc.
