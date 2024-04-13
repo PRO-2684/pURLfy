@@ -264,3 +264,9 @@ class Purlfy extends EventTarget {
         };
     }
 }
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = Purlfy; // Export for Node.js
+} else {
+    this.Purlfy = Purlfy; // Export for browser
+}
