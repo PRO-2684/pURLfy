@@ -267,7 +267,7 @@ Under Redirect mode, pURLfy will:
 | `lambda` | `string` | Required |
 | `continue` | `Boolean` | `true` |
 
-Under Lambda mode, pURLfy will try to execute the lambda function specified in `lambda` and use the result as the new URL. The function body should accept a single `URL` parameter `url` and return a new `URL` object. For example:
+Under Lambda mode, pURLfy will try to execute the lambda function specified in `lambda` and use the result as the new URL. The function shall be async, and its body should accept a single `URL` parameter `url` and return a new `URL` object. For example:
 
 ```jsonc
 {

@@ -16,6 +16,7 @@ class Purlfy extends EventTarget {
         char: 0
     };
     #rules = {};
+    #AsyncFunction = async function() {}.constructor;
 
     constructor(options) {
         super();
@@ -191,8 +192,8 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 try {
-                    const lambda = new Function("url", rule.lambda);
-                    urlObj = lambda(urlObj);
+                    const lambda = new this.#AsyncFunction("url", rule.lambda);
+                    urlObj = await lambda(urlObj);
                     shallContinue = rule.continue ?? true;
                 } catch (e) {
                     logFunc("Error executing lambda:", e);
