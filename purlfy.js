@@ -29,8 +29,11 @@ class Purlfy extends EventTarget {
     }
 
     clearStatistics() {
-        this.#statistics = { ...this.#zeroStatistics };
-        this.#onStatisticsChange();
+        const increment = {};
+        for (const [key, value] of Object.entries(this.#statistics)) {
+            increment[key] = -value;
+        }
+        this.#incrementStatistics(increment);
     }
 
     clearRules() {
@@ -90,8 +93,9 @@ class Purlfy extends EventTarget {
         return null;
     }
 
-    async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object and whether to continue
+    async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
         const mode = rule.mode;
+        const increment = { ...this.#zeroStatistics }; // Incremental statistics
         const lengthBefore = urlObj.href.length;
         const paramsCntBefore = urlObj.searchParams.size;
         let shallContinue = false;
@@ -151,7 +155,7 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 shallContinue = rule.continue ?? true;
-                this.#statistics.decoded++;
+                increment.decoded++;
                 break;
             }
             case "regex": { // Regex mode
@@ -177,7 +181,7 @@ class Purlfy extends EventTarget {
                     let dest = r.headers.get("location");
                     urlObj = new URL(dest);
                     shallContinue = rule.continue ?? true;
-                    this.#statistics.redirected++;
+                    increment.redirected++;
                 }
                 break;
             }
@@ -201,15 +205,18 @@ class Purlfy extends EventTarget {
             }
         }
         const paramsCntAfter = urlObj.searchParams.size;
-        this.#statistics.param += (["white", "black"].includes(mode)) ? (paramsCntBefore - paramsCntAfter) : 0;
-        this.#statistics.char += Math.max(lengthBefore - urlObj.href.length, 0); // Prevent negative char count
-        return [urlObj, shallContinue];
+        increment.param += (["white", "black"].includes(mode)) ? (paramsCntBefore - paramsCntAfter) : 0;
+        increment.char += Math.max(lengthBefore - urlObj.href.length, 0); // Prevent negative char count
+        return [urlObj, shallContinue, increment];
     }
 
-    #onStatisticsChange() {
+    #incrementStatistics(increment) {
+        for (const [key, value] of Object.entries(increment)) {
+            this.#statistics[key] += value;
+        }
         if (typeof CustomEvent === "function") {
             this.dispatchEvent(new CustomEvent("statisticschange", {
-                detail: this.#statistics
+                detail: increment
             }));
         } else {
             this.dispatchEvent(new Event("statisticschange"));
@@ -217,6 +224,7 @@ class Purlfy extends EventTarget {
     }
 
     async purify(originalUrl) { // Purify the given URL based on `rules`
+        let increment = { ...this.#zeroStatistics }; // Incremental statistics of a single purification
         let shallContinue = true;
         let firstRule = null;
         let iteration = 0;
@@ -247,12 +255,16 @@ class Purlfy extends EventTarget {
             }
             firstRule ??= rule;
             logi(`Matching rule: ${rule.description} by ${rule.author}`);
-            [urlObj, shallContinue] = await this.#applyRule(urlObj, rule, logi);
+            let singleIncrement; // Incremental statistics for the current iteration
+            [urlObj, shallContinue, singleIncrement] = await this.#applyRule(urlObj, rule, logi);
+            for (const [key, value] of Object.entries(singleIncrement)) {
+                increment[key] += value;
+            }
             logi("Purified URL:", urlObj.href);
         }
-        if (firstRule) { // Increment statistics only if a rule was applied
-            this.#statistics.url++;
-            this.#onStatisticsChange();
+        if (firstRule && originalUrl !== urlObj.href) { // Increment statistics only if a rule was applied and URL has been changed
+            increment.url++;
+            this.#incrementStatistics(increment);
         }
         return {
             url: urlObj.href,

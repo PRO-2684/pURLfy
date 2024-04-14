@@ -43,7 +43,8 @@ const additionalRules = {}; // 你也可以添加自己的规则
 purifier.importRules(additionalRules);
 purifier.importRules(rules); // 导入规则
 purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
-    console.log("Statistics changed to:", e.detail || purifier.getStatistics());
+    console.log("Statistics increment:", e.detail); // 只有在支持 `CustomEvent` 的环境下才能使用
+    console.log("Current statistics:", purifier.getStatistics());
 });
 purifier.purify("https://example.com/?utm_source=123").then(console.log); // 净化一个 URL
 ```
@@ -89,7 +90,7 @@ new Purlfy({
 - `getStatistics(): object`: 获取统计数据
 - `addEventListener("statisticschange", callback: function): void`: 添加统计数据变化的事件监听器
     - 根据平台是否支持，`callback` 函数会接收一个 `CustomEvent` / `Event` 对象
-    - 若支持 `CustomEvent`，则其 `detail` 属性为新的统计数据
+    - 若支持 `CustomEvent`，则其 `detail` 属性为统计数据的增量
 - `removeEventListener("statisticschange", callback: function): void`: 移除统计数据变化的事件监听器
 
 #### 属性

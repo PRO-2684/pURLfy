@@ -43,7 +43,8 @@ purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(additionalRules);
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
-    console.log("Statistics changed to:", e.detail || purifier.getStatistics());
+    console.log("Statistics increment:", e.detail); // Only available in platforms that support `CustomEvent`
+    console.log("Current statistics:", purifier.getStatistics());
 });
 purifier.purify("https://example.com/?utm_source=123").then(console.log); // Purify a URL
 ```
@@ -89,7 +90,7 @@ new Purlfy({
 - `getStatistics(): object`: Get statistics.
 - `addEventListener("statisticschange", callback: function): void`: Add an event listener for statistics change.
     - The `callback` function will receive an `CustomEvent` / `Event` object based on whether the platform supports it.
-    - If platform supports `CustomEvent`, the `detail` property of the event object will contain the new statistics.
+    - If platform supports `CustomEvent`, the `detail` property of the event object will contain the incremental statistics.
 - `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
 
 #### Properties
