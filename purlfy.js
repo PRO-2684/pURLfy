@@ -230,7 +230,7 @@ class Purlfy extends EventTarget {
         if (URL.canParse(originalUrl)) {
             urlObj = new URL(originalUrl);
         } else {
-            log(`Cannot parse URL ${originalUrl}`);
+            this.#log(`Cannot parse URL ${originalUrl}`);
             return {
                 url: originalUrl,
                 rule: "N/A"
