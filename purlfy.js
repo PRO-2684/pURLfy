@@ -8,13 +8,14 @@ class Purlfy extends EventTarget {
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
         "slice": (s, start, end) => s.slice(parseInt(start), end ? parseInt(end) : undefined),
     };
-    #statistics = {
+    #zeroStatistics = {
         url: 0,
         param: 0,
         decoded: 0,
         redirected: 0,
         char: 0
     };
+    #statistics = { ...this.#zeroStatistics };
     #rules = {};
     #AsyncFunction = async function() {}.constructor;
 
@@ -28,13 +29,7 @@ class Purlfy extends EventTarget {
     }
 
     clearStatistics() {
-        this.#statistics = {
-            url: 0,
-            param: 0,
-            decoded: 0,
-            redirected: 0,
-            char: 0
-        };
+        this.#statistics = { ...this.#zeroStatistics };
         this.#onStatisticsChange();
     }
 
@@ -43,7 +38,7 @@ class Purlfy extends EventTarget {
     }
 
     getStatistics() {
-        return this.#statistics;
+        return { ...this.#statistics };
     }
 
     importRules(rules) {
