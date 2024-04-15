@@ -28,6 +28,7 @@
 - 我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)
 - 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot)
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
+- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 
 ### 🚀 快速开始
 

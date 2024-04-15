@@ -28,6 +28,7 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 - Our [Demo Page](https://pro-2684.github.io/?page=purlfy)
 - Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot)
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
+- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 
 ### 🚀 Quick Start
 
