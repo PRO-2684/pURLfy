@@ -85,6 +85,8 @@ class Purlfy extends EventTarget {
                 if (this.#validRule(rule)) {
                     return rule;
                 }
+            } else {
+                break;
             }
         }
         if (this.#validRule(fallbackRule)) {
