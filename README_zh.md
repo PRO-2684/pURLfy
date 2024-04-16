@@ -41,6 +41,7 @@ const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     lambdaEnabled: true,
 });
 const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // 规则
+// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy/main/rules/<country>.json
 const additionalRules = {}; // 你也可以添加自己的规则
 purifier.importRules(additionalRules);
 purifier.importRules(rules); // 导入规则
@@ -212,12 +213,14 @@ new Purlfy({
 
 下面这张表格展示了每种模式支持的参数:
 
-| 参数\模式 | `white` | `black` | `param` | ~~`regex`~~ | `redirect` | `lambda` |
-| --- | --- | --- | --- | --- | --- | --- |
-| `params` | ✅ | ✅ | ✅ | ❓ | ❌ | ❌ |
-| `decode` | ❌ | ❌ | ✅ | ❓ | ❌ | ❌ |
-| `lambda` | ❌ | ❌ | ❌ | ❓ | ❌ | ✅ |
-| `continue` | ❌ | ❌ | ✅ | ❓ | ✅ | ✅ |
+| 参数\模式 | `white` | `black` | `param` | `regex` | `redirect` | `lambda` |
+| ---------- | -- | --- | -- | --- | -- | --- |
+| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `decode`   | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
 
 #### 🟢 白名单模式 `white`
 
@@ -258,7 +261,18 @@ new Purlfy({
 
 #### 🟣 正则模式 `regex`
 
-TODO
+| 参数 | 类型 | 默认值 |
+| --- | --- | --- |
+| `regex` | `string[]` | 必须 |
+| `replace` | `string[]` | 必须 |
+| `continue` | `Boolean` | `true` |
+
+正则模式下，pURLfy 会对每一 `regex`-`replace` 对进行:
+
+1. 在 URL 中匹配 `regex` 中指定的正则表达式
+2. 替换所有匹配到的部分为 `replace` 中指定的“替换字符串”
+
+若您想要了解“替换字符串”的语法，请参考 [MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E6%8C%87%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E6%9B%BF%E6%8D%A2%E9%A1%B9)。
 
 #### 🟡 重定向模式 `redirect`
 

@@ -41,6 +41,7 @@ const purifier = new Purlfy({ // Instantiate a Purlfy object
     lambdaEnabled: true,
 });
 const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // Rules
+// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy/main/rules/<country>.json
 purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(additionalRules);
@@ -209,12 +210,14 @@ Paths not ending with `/` will be treated as a single rule, and there's multiple
 
 This table shows supported parameters for each mode:
 
-| Param\Mode | `white` | `black` | `param` | ~~`regex`~~ | `redirect` | `lambda` |
-| --- | --- | --- | --- | --- | --- | --- |
-| `params` | ✅ | ✅ | ✅ | ❓ | ❌ | ❌ |
-| `decode` | ❌ | ❌ | ✅ | ❓ | ❌ | ❌ |
-| `lambda` | ❌ | ❌ | ❌ | ❓ | ❌ | ✅ |
-| `continue` | ❌ | ❌ | ✅ | ❓ | ✅ | ✅ |
+| Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `lambda` |
+| ---------- | -- | --- | -- | --- | -- | --- |
+| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `decode`   | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
 
 #### 🟢 Whitelist Mode `white`
 
@@ -255,7 +258,18 @@ Some decoding functions support parameters, simply append them to the function n
 
 #### 🟣 Regex Mode `regex`
 
-TODO
+| Param | Type | Default |
+| --- | --- | --- |
+| `regex` | `string[]` | Required |
+| `replace` | `string[]` | Required |
+| `continue` | `Boolean` | `true` |
+
+Under Regex mode, pURLfy will, for each `regex`-`replace` pair:
+
+1. Match the RegExp pattern specified in `regex` against the URL.
+2. Replace all matched parts with the "replacement string" specified in `replace`.
+
+If you'd like to learn more about the syntax of the "replacement string", please refer to the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement).
 
 #### 🟡 Redirect Mode `redirect`
 

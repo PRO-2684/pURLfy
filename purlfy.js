@@ -61,7 +61,7 @@ class Purlfy extends EventTarget {
             case "param":
                 return Array.isArray(rule.params) && (rule.decode === undefined || Array.isArray(rule.decode)) && this.#udfOrType(rule.continue, "boolean");
             case "regex":
-                return false; // Not implemented yet
+                return Array.isArray(rule.regex) && Array.isArray(rule.replace) && this.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
             case "redirect":
                 return this.redirectEnabled && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
@@ -184,7 +184,18 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "regex": { // Regex mode
-                logFunc("Regex mode not implemented yet");
+                let newUrl = urlObj.href;
+                for (let i = 0; i < rule.regex.length; i++) {
+                    const regex = new RegExp(rule.regex[i], "g");
+                    const replace = rule.replace[i];
+                    newUrl = newUrl.replaceAll(regex, replace);
+                }
+                if (URL.canParse(newUrl, urlObj.href)) { // Valid URL
+                    urlObj = new URL(newUrl);
+                } else { // Invalid URL
+                    logFunc("Invalid URL:", newUrl);
+                    break;
+                }
                 break;
             }
             case "redirect": { // Redirect mode
