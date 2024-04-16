@@ -79,15 +79,38 @@ class Purlfy extends EventTarget {
                 fallbackRule = currentRules[""];
             }
             if (currentRules.hasOwnProperty(part + "/")) {
-                currentRules = currentRules[part + "/"];
+                currentRules = currentRules[part + "/"]; // Exact match - continue to the next level
             } else if (currentRules.hasOwnProperty(part)) {
                 const rule = currentRules[part];
                 if (this.#validRule(rule)) {
-                    return rule;
+                    return rule; // Exact match found
                 }
-            } else {
-                break;
+            } else { // No exact match found, try to match with regex
+                let found = false;
+                // Iterate through current rules to match RegExp
+                for (const [key, val] of Object.entries(currentRules)) {
+                    if (!key.startsWith("/")) continue; // Skip non-RegExp keys
+                    try {
+                        const sub = key.endsWith("/"); // Has sub-rules
+                        const regex = new RegExp(sub ? key.slice(1, -1) : key.slice(1));
+                        if (regex.test(part)) { // Regex matches
+                            if (!sub && this.#validRule(val)) {
+                                return val; // Regex match found
+                            } else if (sub) {
+                                currentRules = val; // Continue to the next level
+                                found = true;
+                                break;
+                            }
+                        }
+                    } catch (e) {
+                        this.#log("Invalid regex:", key.slice(1));
+                    }
+                }
+                if (!found) break; // No matching rule found
             }
+        }
+        if (currentRules.hasOwnProperty("")) { // Fallback rule
+            fallbackRule = currentRules[""];
         }
         if (this.#validRule(fallbackRule)) {
             return fallbackRule;

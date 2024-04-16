@@ -125,14 +125,17 @@ The format of the rules `rules` is as follows:
 
 ### ✅ Path Matching
 
-`<domain>`, `<path>`: The domain and a part of path, such as `example.com/`, `path/` and `page` (Note that the leading `/` is removed). Here's an explanation of them:
+`<domain>`, `<path>`: The domain and a part of path, such as `example.com/`, `/.*\.example\.com`, `path/` and `page`. Here's an explanation of them:
 
 - The basic behavior is like paths on Unix file systems.
     - If not ending with `/`, its value will be treated as a [rule](#-a-single-rule).
     - If ending with `/`, there's more paths under it, like "folders" (theoretically, you can nest infinitely)
     - `/` is not allowed in the *middle* of `<domain>` or `<path>`.
+- Note that if it starts with `/`, it will be treated as a RegExp pattern.
+    - For example, `/.*\.example\.com` will match all subdomains of `example.com`, and `/\d+` will match a part of path that contains only digits.
+    - Using RegExp is not recommended unless necessary, since it will slow down the matching process.
 - If it's an empty string `""`, it will be treated as a **FallBack** rule: this rule will be used when no other rules are matched at this level.
-- If there's multiple rules matched, the rule with the **longest matched** path will be used.
+- If there's multiple rules matched, the **best matched rule** will be used. (Exact match > RegExp match > FallBack rule)
 - If you want a rule to match all paths under a domain, you can omit `<path>`, but remember to remove the `/` after the domain.
 
 A simple example with comments showing the URLs that can be matched:
