@@ -150,8 +150,8 @@ class Purlfy extends EventTarget {
                     }
                 }
                 if (!success) break;
-                if (URL.canParse(dest)) { // Valid URL
-                    urlObj = new URL(dest);
+                if (URL.canParse(dest, urlObj.href)) { // Valid URL
+                    urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", dest);
                     break;
