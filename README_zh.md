@@ -76,7 +76,8 @@ new Purlfy({
         redirected: Number, // 重定向的网址数量 (`redirect` 模式)
         char: Number, // 移除的字符数量
     },
-    log: Function, // 日志函数 (默认: `console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m")`)
+    log: Function, // 日志函数 (默认通过 `console.log` 输出)
+    getRedirectedUrl: async Function, // 获取重定向后的 URL 的函数 (默认使用 `fetch` 发送 `HEAD` 请求，详见 [重定向模式](#-重定向模式-redirect))
 })
 ```
 
@@ -281,22 +282,18 @@ new Purlfy({
 #### 🟡 重定向模式 `redirect`
 
 > [!CAUTION]
-> 出于兼容性考虑，此模式默认禁用。若您想要启用此模式并且 **执行环境支持跨域**，请参照 [API 文档](#-API) 开启此模式。
+> 出于兼容性考虑，此模式默认禁用。请参照 [API 文档](#-API) 开启此模式。
 
 | 参数 | 类型 | 默认值 |
 | --- | --- | --- |
 | `continue` | `Boolean` | `true` |
 
-重定向模式下，pURLfy 会:
-
-1. 向匹配到的网址发起 `HEAD` 请求
-2. 若返回的状态码为 `3xx`，则会将头部信息中的 `Location` 作为新的 URL
-3. 若 `continue` 未被设置为 `false`，则再次净化新的 URL
+重定向模式下，pURLfy 会调用传入参数 `getRedirectedUrl` 来获取重定向后的 URL。`getRedirectedUrl` 应为一个异步函数，接受一个类型为 `string` 的参数 `url`，并返回一个新的 `string` 类型的 URL 作为重定向后的 URL。默认情况下，pURLfy 会使用 `fetch` 发送 `HEAD` 请求来获取重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
 #### 🔵 匿名函数模式 `lambda`
 
 > [!CAUTION]
-> 出于安全考虑，此模式默认禁用。若您想要启用此模式并且 **信任规则来源**，请参照 [API 文档](#-API) 开启此模式。
+> 出于安全考虑，此模式默认禁用。若您 **信任规则来源**，请参照 [API 文档](#-API) 开启此模式。
 
 | 参数 | 类型 | 默认值 |
 | --- | --- | --- |

@@ -76,7 +76,8 @@ new Purlfy({
         redirected: Number, // Number of URLs redirected (`redirect` mode)
         char: Number, // Number of characters deleted
     },
-    log: Function, // Log function (default: `console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m")`)
+    log: Function, // Log function (default is using `console.log` for output)
+    getRedirectedUrl: async Function, // Function to get redirected URL (default is using `fetch` for `HEAD` request, refer to [redirect mode](#-redirect-mode-redirect) for more details)
 })
 ```
 
@@ -287,16 +288,12 @@ If you'd like to learn more about the syntax of the "replacement string", please
 | --- | --- | --- |
 | `continue` | `Boolean` | `true` |
 
-Under Redirect mode, pURLfy will:
-
-1. Attempt to fire a `HEAD` request to the matched URL.
-2. If the status code is `3xx`, the `Location` header will be used as the new URL.
-3. If `continue` is not set to `false`, purify the new URL again.
+Under Redirect mode, pURLfy will call passed-in parameter `getRedirectedUrl` to get the redirected URL. The `getRedirectedUrl` should be an async function, accept a single `string` parameter `url`, and return a new `string` representing the redirected URL. The default implementation is to fire a `HEAD` request to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
 
 #### 🔵 Lambda Mode `lambda`
 
 > [!CAUTION]
-> For security reasons, the `lambda` mode is disabled by default. Refer to the [API documentation](#-API) for enabling it.
+> For security reasons, the `lambda` mode is disabled by default. If you **trust the rules provider**, refer to the [API documentation](#-API) for enabling it.
 
 | Param | Type | Default |
 | --- | --- | --- |

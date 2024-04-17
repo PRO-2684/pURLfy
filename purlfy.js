@@ -3,6 +3,17 @@ class Purlfy extends EventTarget {
     lambdaEnabled = false;
     maxIterations = 5;
     #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
+    #getRedirectedUrl = async url => {
+        const r = await fetch(url, {
+            method: "HEAD",
+            redirect: "manual"
+        });
+        if ((r.status === 301 || r.status === 302) && r.headers.has("location")) {
+            const dest = r.headers.get("location");
+            return dest;
+        }
+        return null;
+    };
     #paramDecoders = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
@@ -26,6 +37,7 @@ class Purlfy extends EventTarget {
         this.maxIterations = options?.maxIterations ?? this.maxIterations;
         Object.assign(this.#statistics, options?.statistics);
         this.#log = options?.log ?? this.#log;
+        this.#getRedirectedUrl = options?.getRedirectedUrl ?? this.#getRedirectedUrl;
     }
 
     clearStatistics() {
@@ -203,21 +215,19 @@ class Purlfy extends EventTarget {
                     logFunc("Redirect mode is disabled.");
                     break;
                 }
-                let r = null;
+                let dest = null;
                 try {
-                    r = await fetch(urlObj.href, {
-                        method: "HEAD",
-                        redirect: "manual"
-                    });
+                    dest = await this.#getRedirectedUrl(urlObj.href);
                 } catch (e) {
-                    logFunc("Error fetching URL:", e);
+                    logFunc("Error following redirect:", e);
                     break;
                 }
-                if ((r.status === 301 || r.status === 302) && r.headers.has("location")) {
-                    let dest = r.headers.get("location");
-                    urlObj = new URL(dest);
+                if (dest && URL.canParse(dest, urlObj.href)) {
+                    urlObj = new URL(dest, urlObj.href);
                     shallContinue = rule.continue ?? true;
                     increment.redirected++;
+                } else {
+                    logFunc("Invalid redirect destination:", dest);
                 }
                 break;
             }
