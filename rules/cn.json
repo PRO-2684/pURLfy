@@ -114,6 +114,16 @@
 		"params": [],
 		"author": "kirito"
 	},
+	"kandianshare.html5.qq.com/": {
+		"v2/": {
+			"news": {
+				"description": "QQ 看点分享",
+				"mode": "white",
+				"params": [],
+				"author": "PRO-2684"
+			}
+		}
+	},
 	"leetcode.cn/": {
 		"link": {
 			"description": "LeetCode 外链",
