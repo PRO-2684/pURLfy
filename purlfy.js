@@ -276,8 +276,9 @@ class Purlfy extends EventTarget {
         let iteration = 0;
         let urlObj;
         this.#log("Purifying URL:", originalUrl);
-        if (URL.canParse(originalUrl)) {
-            urlObj = new URL(originalUrl);
+        const optionalLocation = typeof location !== 'undefined' ? location.href : undefined;
+        if (URL.canParse(originalUrl, optionalLocation)) {
+            urlObj = new URL(originalUrl, optionalLocation);
         } else {
             this.#log(`Cannot parse URL ${originalUrl}`);
             return {

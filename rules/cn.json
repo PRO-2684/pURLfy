@@ -339,6 +339,14 @@
 			}
 		}
 	},
+	"search.bilibili.com": {
+		"description": "哔哩哔哩搜索",
+		"mode": "white",
+		"params": [
+			"keyword"
+		],
+		"author": "PRO-2684"
+	},
 	"space.bilibili.com/": {
 		"/^\\d+$": {
 			"description": "个人界面分享",
