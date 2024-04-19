@@ -14,7 +14,7 @@ class Purlfy extends EventTarget {
             };
         }
         const r = await fetch(url, options);
-        if ((r.status === 301 || r.status === 302) && r.headers.has("location")) {
+        if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
             const dest = r.headers.get("location");
             return dest;
         }
