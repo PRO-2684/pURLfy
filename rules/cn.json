@@ -26,6 +26,11 @@
 		"mode": "redirect",
 		"author": "PRO-2684"
 	},
+	"bit.ly": {
+		"description": "Bitly",
+		"mode": "redirect",
+		"author": "PRO-2684"
+	},
 	"c.pc.qq.com": {
 		"description": "QQ 外链",
 		"mode": "param",
@@ -441,6 +446,11 @@
 				"author": "青墨"
 			}
 		}
+	},
+	"tinyurl.com": {
+		"description": "TinyURL",
+		"mode": "redirect",
+		"author": "PRO-2684"
 	},
 	"weibo.cn/": {
 		"sinaurl": {
