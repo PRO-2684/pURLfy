@@ -81,7 +81,7 @@ class Purlfy extends EventTarget {
             case "regex":
                 return Array.isArray(rule.regex) && Array.isArray(rule.replace) && this.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
             case "redirect":
-                return this.redirectEnabled && this.#udfOrType(rule.continue, "boolean");
+                return this.redirectEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
                 return this.lambdaEnabled && typeof rule.lambda === "string" && this.#udfOrType(rule.continue, "boolean");
             default:
