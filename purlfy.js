@@ -223,7 +223,12 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 if (dest && URL.canParse(dest, urlObj.href)) {
+                    const prevUrl = urlObj.href;
                     urlObj = new URL(dest, urlObj.href);
+                    if (urlObj.href === prevUrl) { // No redirection
+                        logFunc("No redirection made.");
+                        break;
+                    }
                     shallContinue = rule.continue ?? true;
                     increment.redirected++;
                 } else {
