@@ -404,6 +404,12 @@
 			"author": "青墨"
 		}
 	},
+	"t.co": {
+		"description": "Twitter 短链",
+		"mode": "redirect",
+		"ua": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+		"author": "PRO-2684"
+	},
 	"t.me/": {
 		"iv": {
 			"description": "Telegram 外链",

@@ -3,11 +3,17 @@ class Purlfy extends EventTarget {
     lambdaEnabled = false;
     maxIterations = 5;
     #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
-    #getRedirectedUrl = async url => {
-        const r = await fetch(url, {
+    #getRedirectedUrl = async (url, ua) => {
+        const options = {
             method: "HEAD",
             redirect: "manual"
-        });
+        };
+        if (ua) {
+            options.headers = {
+                "User-Agent": ua
+            };
+        }
+        const r = await fetch(url, options);
         if ((r.status === 301 || r.status === 302) && r.headers.has("location")) {
             const dest = r.headers.get("location");
             return dest;
@@ -217,7 +223,7 @@ class Purlfy extends EventTarget {
                 }
                 let dest = null;
                 try {
-                    dest = await this.#getRedirectedUrl(urlObj.href);
+                    dest = await this.#getRedirectedUrl(urlObj.href, rule.ua);
                 } catch (e) {
                     logFunc("Error following redirect:", e);
                     break;

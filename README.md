@@ -224,6 +224,7 @@ This table shows supported parameters for each mode:
 | `decode`   | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
 | `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| `ua`       | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
 | `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
 
@@ -286,9 +287,15 @@ If you'd like to learn more about the syntax of the "replacement string", please
 
 | Param | Type | Default |
 | --- | --- | --- |
+| `ua` | `string` | `undefined` |
 | `continue` | `Boolean` | `true` |
 
-Under Redirect mode, pURLfy will call passed-in parameter `getRedirectedUrl` to get the redirected URL. The `getRedirectedUrl` should be an async function, accept a single `string` parameter `url`, and return a new `string` representing the redirected URL. The default implementation is to fire a `HEAD` request to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
+Under Redirect mode, pURLfy will call constructor parameter `getRedirectedUrl` to get the redirected URL. The `getRedirectedUrl` should be an async function, accept:
+
+- a single `string` parameter `url` as the target URL
+- `undefined` or a `string` parameter `ua` as the `User-Agent` header
+
+, and return a new `string` representing the redirected URL. The default implementation is to fire a `HEAD` request to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
 
 #### 🔵 Lambda Mode `lambda`
 
