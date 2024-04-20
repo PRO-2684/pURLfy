@@ -591,9 +591,25 @@
 			"description": "Google Search",
 			"mode": "white",
 			"params": [
-				"q"
+				"q",
+				"lr",
+				"tbs",
+				"udm",
+				"tbm",
+				"as_q",
+				"as_epq",
+				"as_oq",
+				"as_eq",
+				"as_nlo",
+				"as_nhi",
+				"lr",
+				"cr",
+				"as_qdr",
+				"as_sitesearch",
+				"as_occt",
+				"as_filetype"
 			],
-			"author": "MateChan"
+			"author": "MateChan, PRO-2684"
 		}
 	},
 	"www.instagram.com/": {
