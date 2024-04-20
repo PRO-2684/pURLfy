@@ -40,8 +40,8 @@ const purifier = new Purlfy({ // Instantiate a Purlfy object
     redirectEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // Rules
-// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy/main/rules/<country>.json
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<country>.json")).json(); // Rules
+// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<country>.json
 purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(additionalRules);
@@ -107,7 +107,7 @@ You can change these properties after instantiation, and they will take effect f
 
 ## 📖 Rules
 
-The format of the rules `rules` is as follows:
+Community-contributed rules files are hosted on GitHub, and you can find them at [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules). The format of the rules files is as follows:
 
 ```jsonc
 {

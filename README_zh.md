@@ -40,8 +40,8 @@ const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     redirectEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/rules/<country>.json")).json(); // 规则
-// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy/main/rules/<country>.json
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<country>.json")).json(); // 规则
+// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<country>.json
 const additionalRules = {}; // 你也可以添加自己的规则
 purifier.importRules(additionalRules);
 purifier.importRules(rules); // 导入规则
@@ -107,7 +107,7 @@ new Purlfy({
 
 ## 📖 规则
 
-规则 `rules` 的格式如下:
+社区贡献的规则文件托管在 GitHub 上，您可以在 [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules) 中找到。规则文件的格式如下:
 
 ```jsonc
 {
