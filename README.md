@@ -16,7 +16,6 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 - 📃 Rule-based: Perform purification based on rules, making it more flexible.
 - 🔄️ Async: Calling `purify` won't block your thread.
 - 🔁 Iterative purification: If the URL still contains tracking parameters after a single purification (e.g. URLs returned by `redirect` rules), it will continue to be purified.
-- ⚠️ Non-standard search parameters tolerance: Tolerate non-standard search parameters, which may include special characters or spaces.
 - 📊 Statistics: You can track statistics of the purification process, including the number of links purified, the number of parameters removed, the number of URLs decoded, the number of URLs redirected, and the number of characters deleted, etc.
 
 ## 🤔 Usage
@@ -221,6 +220,7 @@ This table shows supported parameters for each mode:
 
 | Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `lambda` |
 | ---------- | -- | --- | -- | --- | -- | --- |
+| `std`      | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | `decode`   | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
@@ -234,16 +234,18 @@ This table shows supported parameters for each mode:
 | Param | Type | Default |
 | --- | --- | --- |
 | `params` | `string[]` | Required |
+| `std` | `Boolean` | `false` |
 
-Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. Note that only URLs with standard search string will be processed. Usually this is the most commonly used mode.
+Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. `std` is for controlling whether the URL search string shall be deemed standard. Only if it is `true` or the URL search string is indeed standard will the URL be processed. Usually this is the most commonly used mode.
 
 #### 🟠 Blacklist Mode `black`
 
 | Param | Type | Default |
 | --- | --- | --- |
 | `params` | `string[]` | Required |
+| `std` | `Boolean` | `false` |
 
-Under Blacklist mode, the parameters specified in `params` will be removed, and others will be kept. Note that only URLs with standard search string will be processed.
+Under Blacklist mode, the parameters specified in `params` will be removed, and others will be kept. `std` is for controlling whether the URL search string shall be deemed standard. Only if it is `true` or the URL search string is indeed standard will the URL be processed.
 
 #### 🟤 Specific Parameter Mode `param`
 

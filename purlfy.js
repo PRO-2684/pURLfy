@@ -75,7 +75,7 @@ class Purlfy extends EventTarget {
         switch (rule.mode) {
             case "white":
             case "black":
-                return Array.isArray(rule.params);
+                return Array.isArray(rule.params) && this.#udfOrType(rule.std, "boolean");
             case "param":
                 return Array.isArray(rule.params) && (rule.decode === undefined || Array.isArray(rule.decode)) && this.#udfOrType(rule.continue, "boolean");
             case "regex":
@@ -148,7 +148,7 @@ class Purlfy extends EventTarget {
         let shallContinue = false;
         switch (mode) { // Purifies `urlObj` based on the rule
             case "white": { // Whitelist mode
-                if (!this.#isStandard(urlObj)) {
+                if (!rule.std && !this.#isStandard(urlObj)) {
                     logFunc("Non-standard URL search string:", urlObj.search);
                     break;
                 }
@@ -162,7 +162,7 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "black": { // Blacklist mode
-                if (!this.#isStandard(urlObj)) {
+                if (!rule.std && !this.#isStandard(urlObj)) {
                     logFunc("Non-standard URL search string:", urlObj.search);
                     break;
                 }
