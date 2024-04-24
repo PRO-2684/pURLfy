@@ -1,11 +1,12 @@
 // Alternative class to URLSearchParams, which does not encode/decode the parameters
+// Do note that this class is not a complete replacement for URLSearchParams, and it does not allow duplicate keys
 class SearchParams { // Adapted from https://github.com/yext/answers-search-ui/blob/b790f412a68bf64bdeed8eb0be065fb810b02231/src/ui/dom/searchparams.js#L9
     constructor(url) {
         this.size = 0;
-        this._params = this.parse(url);
+        this._params = this.#parse(url);
     }
 
-    parse(url) {
+    #parse(url) {
         const params = {};
         let search = url;
 
@@ -17,7 +18,7 @@ class SearchParams { // Adapted from https://github.com/yext/answers-search-ui/b
             search = url.slice(url.indexOf('?') + 1);
         }
 
-        const encodedParams = search.split('&');
+        const encodedParams = search.split('&').filter(Boolean);
         for (let i = 0; i < encodedParams.length; i++) {
             const keyVal = encodedParams[i].split('=');
             if (keyVal.length > 1) {
