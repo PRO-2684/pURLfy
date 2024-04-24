@@ -235,7 +235,7 @@ This table shows supported parameters for each mode:
 | --- | --- | --- |
 | `params` | `string[]` | Required |
 
-Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. Usually this is the most commonly used mode.
+Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. Note that only URLs with standard search string will be processed. Usually this is the most commonly used mode.
 
 #### 🟠 Blacklist Mode `black`
 
@@ -243,7 +243,7 @@ Under Whitelist mode, only the parameters specified in `params` will be kept, an
 | --- | --- | --- |
 | `params` | `string[]` | Required |
 
-Under Blacklist mode, the parameters specified in `params` will be removed, and others will be kept.
+Under Blacklist mode, the parameters specified in `params` will be removed, and others will be kept. Note that only URLs with standard search string will be processed.
 
 #### 🟤 Specific Parameter Mode `param`
 

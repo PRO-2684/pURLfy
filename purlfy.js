@@ -1,74 +1,3 @@
-// Alternative class to URLSearchParams, which does not encode/decode the parameters
-// Do note that this class is not a complete replacement for URLSearchParams, and it does not allow duplicate keys
-class SearchParams { // Adapted from https://github.com/yext/answers-search-ui/blob/b790f412a68bf64bdeed8eb0be065fb810b02231/src/ui/dom/searchparams.js#L9
-    constructor(url) {
-        this.size = 0;
-        this._params = this.#parse(url);
-    }
-
-    #parse(url) {
-        const params = {};
-        let search = url;
-
-        if (!search) {
-            return params;
-        }
-
-        if (url.indexOf('?') > -1) {
-            search = url.slice(url.indexOf('?') + 1);
-        }
-
-        const encodedParams = search.split('&').filter(Boolean);
-        for (let i = 0; i < encodedParams.length; i++) {
-            const keyVal = encodedParams[i].split('=');
-            if (keyVal.length > 1) {
-                params[keyVal[0]] = keyVal[1];
-            } else {
-                params[keyVal[0]] = '';
-            }
-        }
-
-        this.size = Object.keys(params).length;
-        return params;
-    }
-
-    get(query) {
-        if (typeof this._params[String(query)] === 'undefined') {
-            return null;
-        }
-        return this._params[String(query)];
-    }
-
-    set(name, value) {
-        this._params[String(name)] = String(value);
-    }
-
-    has(query) {
-        return query in this._params;
-    }
-
-    delete(name) {
-        delete this._params[String(name)];
-        this.size = Object.keys(this._params).length;
-    }
-
-    toString() {
-        const string = [];
-        for (const key in this._params) {
-            string.push(`${key}=${this._params[key]}`);
-        }
-        return string.join('&');
-    }
-
-    entries() {
-        const entries = [];
-        for (const key in this._params) {
-            entries.push([key, this._params[key]]);
-        }
-        return entries;
-    }
-}
-
 class Purlfy extends EventTarget {
     redirectEnabled = false;
     lambdaEnabled = false;
@@ -105,7 +34,7 @@ class Purlfy extends EventTarget {
     };
     #statistics = { ...this.#zeroStatistics };
     #rules = {};
-    #AsyncFunction = async function() {}.constructor;
+    #AsyncFunction = async function () { }.constructor;
 
     constructor(options) {
         super();
@@ -207,6 +136,10 @@ class Purlfy extends EventTarget {
         return null;
     }
 
+    #isStandard(urlObj) { // Check if the given urlObj's search string follows the standard format
+        return urlObj.searchParams.toString() === urlObj.search.slice(1);
+    }
+
     async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
         const mode = rule.mode;
         const increment = { ...this.#zeroStatistics }; // Incremental statistics
@@ -215,31 +148,36 @@ class Purlfy extends EventTarget {
         let shallContinue = false;
         switch (mode) { // Purifies `urlObj` based on the rule
             case "white": { // Whitelist mode
-                const newParams = new SearchParams();
-                const oldParams = new SearchParams(urlObj.search);
+                if (!this.#isStandard(urlObj)) {
+                    logFunc("Non-standard URL search string:", urlObj.search);
+                    break;
+                }
+                const newParams = new URLSearchParams();
                 for (const param of rule.params) {
-                    if (oldParams.has(param)) {
-                        newParams.set(param, oldParams.get(param));
+                    if (urlObj.searchParams.has(param)) {
+                        newParams.set(param, urlObj.searchParams.get(param));
                     }
                 }
                 urlObj.search = newParams.toString();
                 break;
             }
             case "black": { // Blacklist mode
-                const params = new SearchParams(urlObj.search);
-                for (const param of rule.params) {
-                    params.delete(param);
+                if (!this.#isStandard(urlObj)) {
+                    logFunc("Non-standard URL search string:", urlObj.search);
+                    break;
                 }
-                urlObj.search = params.toString();
+                for (const param of rule.params) {
+                    urlObj.searchParams.delete(param);
+                }
+                urlObj.search = urlObj.searchParams.toString();
                 break;
             }
             case "param": { // Specific param mode
                 // Decode given parameter to be used as a new URL
-                const params = new SearchParams(urlObj.search);
                 let paramValue = null;
                 for (const param of rule.params) { // Find the first available parameter value
-                    if (params.has(param)) {
-                        paramValue = params.get(param);
+                    if (urlObj.searchParams.has(param)) {
+                        paramValue = urlObj.searchParams.get(param);
                         break;
                     }
                 }
