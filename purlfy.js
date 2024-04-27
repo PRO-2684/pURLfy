@@ -83,7 +83,7 @@ class Purlfy extends EventTarget {
             case "redirect":
                 return this.redirectEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
-                return this.lambdaEnabled && typeof rule.lambda === "string" && this.#udfOrType(rule.continue, "boolean");
+                return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof this.#AsyncFunction) && this.#udfOrType(rule.continue, "boolean");
             default:
                 return false;
         }
@@ -261,7 +261,8 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 try {
-                    const lambda = new this.#AsyncFunction("url", rule.lambda);
+                    const lambda = typeof rule.lambda === "string" ? new this.#AsyncFunction("url", rule.lambda) : rule.lambda;
+                    rule.lambda = lambda; // "Cache" the compiled lambda function
                     urlObj = await lambda(urlObj);
                     shallContinue = rule.continue ?? true;
                 } catch (e) {
