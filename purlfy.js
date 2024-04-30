@@ -77,7 +77,7 @@ class Purlfy extends EventTarget {
             case "redirect":
                 return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
             case "visit":
-                return this.fetchEnabled && this.#udfOrType(rule.ua) && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
                 return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof this.#AsyncFunction) && this.#udfOrType(rule.continue, "boolean");
             default:
@@ -144,14 +144,14 @@ class Purlfy extends EventTarget {
             const act = this.#acts[name];
             if (!act) {
                 logFunc("Invalid act:", cmd);
-                dest = input; // Reset to the original input
+                dest = null;
                 break;
             }
             try {
                 dest = act(dest, ...args.slice(1));
             } catch (e) {
                 logFunc(`Error processing input with act "${name}":`, e);
-                dest = input; // Reset to the original input
+                dest = null;
                 break;
             }
         }
@@ -204,8 +204,7 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 const dest = this.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
-                if (dest === paramValue) break;
-                if (URL.canParse(dest, urlObj.href)) { // Valid URL
+                if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                     urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", dest);
@@ -293,8 +292,7 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
-                if (dest === html) break;
-                if (URL.canParse(dest, urlObj.href)) { // Valid URL
+                if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                     urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", dest);
