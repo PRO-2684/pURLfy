@@ -66,10 +66,11 @@ new Purlfy({
         param: Number, // 移除的参数数量
         decoded: Number, // 解码的网址数量 (`param` 模式)
         redirected: Number, // 重定向的网址数量 (`redirect` 模式)
+        visited: Number, // 访问的网址数量 (`visit` 模式)
         char: Number, // 移除的字符数量
     },
     log: Function, // 日志函数 (默认通过 `console.log` 输出)
-    getRedirectedUrl: async Function, // 获取重定向后的 URL 的函数 (默认使用 `fetch` 发送 `HEAD` 请求，详见 [重定向模式](#-重定向模式-redirect))
+    fetch: async Function, // 用于获取指定 URL 的函数，`options` 参数至少需要支持 `method`, `headers` 和 `redirect` (默认使用 `fetch`)
 })
 ```
 
@@ -279,14 +280,12 @@ new Purlfy({
 | `ua` | `string` | `undefined` |
 | `continue` | `Boolean` | `true` |
 
-重定向模式下，pURLfy 会调用构造时的参数 `getRedirectedUrl` 来获取重定向后的 URL。`getRedirectedUrl` 应为一个异步函数，接受：
-
-- 一个类型为 `string` 的参数 `url`，作为目标 URL
-- `undefined` 或一个类型为 `string` 的参数 `ua`，作为请求头中的 `User-Agent` 字段
-
-，并返回一个新的 `string` 类型的 URL 作为重定向后的 URL。默认情况下，pURLfy 会使用 `fetch` 发送 `HEAD` 请求来获取重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
+重定向模式下，pURLfy 会调用构造时的参数 `fetch` 使用 `ua` 发送 `HEAD` 请求并返回 `Location` 标头作为重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
 #### 🟠 访问模式 `visit`
+
+> [!CAUTION]
+> 出于兼容性考虑，此模式默认禁用。请参照 [API 文档](#-API) 开启此模式。
 
 | 参数 | 类型 | 默认值 |
 | --- | --- | --- |

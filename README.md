@@ -66,10 +66,11 @@ new Purlfy({
         param: Number, // Number of parameters removed
         decoded: Number, // Number of URLs decoded (`param` mode)
         redirected: Number, // Number of URLs redirected (`redirect` mode)
+        visited: Number, // Number of URLs visited (`visit` mode)
         char: Number, // Number of characters deleted
     },
     log: Function, // Log function (default is using `console.log` for output)
-    getRedirectedUrl: async Function, // Function to get redirected URL (default is using `fetch` for `HEAD` request, refer to [redirect mode](#-redirect-mode-redirect) for more details)
+    fetch: async Function, // Function to fetch the given URL, should at least support `method`, `headers` and `redirect` in `options` parameter (default is using `fetch`)
 })
 ```
 
@@ -279,14 +280,12 @@ If you'd like to learn more about the syntax of the "replacement string", please
 | `ua` | `string` | `undefined` |
 | `continue` | `Boolean` | `true` |
 
-Under Redirect mode, pURLfy will call constructor parameter `getRedirectedUrl` to get the redirected URL. The `getRedirectedUrl` should be an async function, accept:
-
-- a single `string` parameter `url` as the target URL
-- `undefined` or a `string` parameter `ua` as the `User-Agent` header
-
-, and return a new `string` representing the redirected URL. The default implementation is to fire a `HEAD` request to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
+Under Redirect mode, pURLfy will call constructor parameter `fetch` to get the redirected URL, by firing a `HEAD` request using `ua` to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
 
 #### 🟠 Visit Mode `visit`
+
+> [!CAUTION]
+> For compatibility reasons, the `redirect` mode is disabled by default. Refer to the [API documentation](#-API) for enabling it.
 
 | Param | Type | Default |
 | --- | --- | --- |

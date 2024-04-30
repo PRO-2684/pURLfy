@@ -3,23 +3,7 @@ class Purlfy extends EventTarget {
     lambdaEnabled = false;
     maxIterations = 5;
     #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
-    #getRedirectedUrl = async (url, ua) => {
-        const options = {
-            method: "HEAD",
-            redirect: "manual"
-        };
-        if (ua) {
-            options.headers = {
-                "User-Agent": ua
-            };
-        }
-        const r = await fetch(url, options);
-        if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
-            const dest = r.headers.get("location");
-            return dest;
-        }
-        return null;
-    };
+    #fetch = fetch;
     #acts = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
@@ -39,6 +23,7 @@ class Purlfy extends EventTarget {
         param: 0,
         decoded: 0,
         redirected: 0,
+        visited: 0,
         char: 0
     };
     #statistics = { ...this.#zeroStatistics };
@@ -52,7 +37,7 @@ class Purlfy extends EventTarget {
         this.maxIterations = options?.maxIterations ?? this.maxIterations;
         Object.assign(this.#statistics, options?.statistics);
         this.#log = options?.log ?? this.#log;
-        this.#getRedirectedUrl = options?.getRedirectedUrl ?? this.#getRedirectedUrl;
+        this.#fetch = options?.fetch ?? this.#fetch;
     }
 
     clearStatistics() {
@@ -151,6 +136,28 @@ class Purlfy extends EventTarget {
         return urlObj.searchParams.toString() === urlObj.search.slice(1);
     }
 
+    #applyActs(input, acts, logFunc) { // Apply the given acts to the given input
+        let dest = input;
+        for (const cmd of (acts)) {
+            const args = cmd.split(":");
+            const name = args[0];
+            const act = this.#acts[name];
+            if (!act) {
+                logFunc("Invalid act:", cmd);
+                dest = input; // Reset to the original input
+                break;
+            }
+            try {
+                dest = act(dest, ...args.slice(1));
+            } catch (e) {
+                logFunc(`Error processing input with act "${name}":`, e);
+                dest = input; // Reset to the original input
+                break;
+            }
+        }
+        return dest;
+    }
+
     async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
         const mode = rule.mode;
         const increment = { ...this.#zeroStatistics }; // Incremental statistics
@@ -184,7 +191,7 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "param": { // Specific param mode
-                // Decode given parameter to be used as a new URL
+                // Process given parameter to be used as a new URL
                 let paramValue = null;
                 for (const param of rule.params) { // Find the first available parameter value
                     if (urlObj.searchParams.has(param)) {
@@ -196,25 +203,8 @@ class Purlfy extends EventTarget {
                     logFunc("Parameter(s) not found:", rule.params.join(", "));
                     break;
                 }
-                let dest = paramValue;
-                let success = true;
-                for (const cmd of (rule.acts ?? ["url"])) {
-                    const args = cmd.split(":");
-                    const name = args[0];
-                    const act = this.#acts[name];
-                    if (!act) {
-                        logFunc("Invalid decoder:", cmd);
-                        success = false;
-                        break;
-                    }
-                    try {
-                        dest = act(dest, ...args.slice(1));
-                    } catch (e) {
-                        logFunc(`Error decoding parameter with decoder "${name}":`, e);
-                        break;
-                    }
-                }
-                if (!success) break;
+                const dest = this.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
+                if (dest === paramValue) break;
                 if (URL.canParse(dest, urlObj.href)) { // Valid URL
                     urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
@@ -245,9 +235,21 @@ class Purlfy extends EventTarget {
                     logFunc("Redirect mode is disabled.");
                     break;
                 }
+                const options = {
+                    method: "HEAD",
+                    redirect: "manual"
+                };
+                if (rule.ua) {
+                    options.headers = {
+                        "User-Agent": ua
+                    };
+                }
                 let dest = null;
                 try {
-                    dest = await this.#getRedirectedUrl(urlObj.href, rule.ua);
+                    const r = await this.#fetch(urlObj.href, options);
+                    if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
+                        dest = r.headers.get("location");
+                    }
                 } catch (e) {
                     logFunc("Error following redirect:", e);
                     break;
@@ -267,7 +269,38 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "visit": { // Visit mode
-                break; // Not implemented yet
+                if (!this.fetchEnabled) {
+                    logFunc("Visit mode is disabled.");
+                    break;
+                }
+                const options = {
+                    method: "GET",
+                    redirect: "follow"
+                };
+                if (rule.ua) {
+                    options.headers = {
+                        "User-Agent": rule.ua
+                    };
+                }
+                let html = null;
+                try {
+                    html = await this.#fetch(urlObj.href, options);
+                    html = await html.text();
+                } catch (e) {
+                    logFunc("Error visiting URL:", e);
+                    break;
+                }
+                const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
+                if (dest === html) break;
+                if (URL.canParse(dest, urlObj.href)) { // Valid URL
+                    urlObj = new URL(dest, urlObj.href);
+                } else { // Invalid URL
+                    logFunc("Invalid URL:", dest);
+                    break;
+                }
+                shallContinue = rule.continue ?? true;
+                increment.visited++;
+                break;
             }
             case "lambda": {
                 if (!this.lambdaEnabled) {
