@@ -29,7 +29,7 @@ Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out wi
 ```js
 // Somewhat import `Purlfy` class from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js
 const purifier = new Purlfy({ // Instantiate a Purlfy object
-    redirectEnabled: true,
+    fetchEnabled: true,
     lambdaEnabled: true,
 });
 const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<country>.json")).json(); // Rules
@@ -58,7 +58,7 @@ Here's a list of test URLs that you can use to test pURLfy:
 
 ```js
 new Purlfy({
-    redirectEnabled: Boolean, // Enable the redirect mode (default: false)
+    fetchEnabled: Boolean, // Enable the redirect mode (default: false)
     lambdaEnabled: Boolean, // Enable the lambda mode (default: false)
     maxIterations: Number, // Maximum number of iterations (default: 5)
     statistics: { // Initial statistics
@@ -93,7 +93,7 @@ new Purlfy({
 
 You can change these properties after instantiation, and they will take effect for the next call to `purify`.
 
-- `redirectEnabled: Boolean`: Whether the redirect mode is enabled.
+- `fetchEnabled: Boolean`: Whether the redirect mode is enabled.
 - `lambdaEnabled: Boolean`: Whether the lambda mode is enabled.
 - `maxIterations: Number`: Maximum number of iterations.
 
@@ -210,16 +210,16 @@ Paths not ending with `/` will be treated as a single rule, and there's multiple
 
 This table shows supported parameters for each mode:
 
-| Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `lambda` |
-| ---------- | -- | --- | -- | --- | -- | --- |
-| `std`      | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `decode`   | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| `ua`       | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `visit` | `lambda` |
+| ---------- | -- | --- | -- | --- | -- | --- | -- |
+| `std`      | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `acts`     | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| `ua`       | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
+| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 #### 🟢 Whitelist Mode `white`
 
@@ -244,21 +244,15 @@ Under Blacklist mode, the parameters specified in `params` will be removed, and 
 | Param | Type | Default |
 | --- | --- | --- |
 | `params` | `string[]` | Required |
-| `decode` | `string[]` | `["url"]` |
+| `acts`   | `string[]` | `["url"]` |
 | `continue` | `Boolean` | `true` |
 
 Under Specific Parameter mode, pURLfy will:
 
 1. Attempt to extract the parameters specified in `params` in order, until the first existing parameter is matched.
-2. Decode the parameter value using the decoding functions specified in the `decode` array in order (if any `decode` value is invalid or throws an error, it is considered a failure and the original URL is returned).
+2. Decode the parameter value using the [processors](#-processors) specified in the `acts` array in order (if any `acts` value is invalid or throws an error, it is considered a failure and the original URL is returned).
 3. Use the final result as the new URL.
 4. If `continue` is not set to `false`, purify the new URL again.
-
-Some decoding functions support parameters, simply append them to the function name separated by a colon (`:`): `func:arg1:arg2...:argn`. The following decoding functions are currently supported:
-
-- `url`: URL decoding (`decodeURIComponent`)
-- `base64`: Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
-- `slice:start:end`: String slicing (`s.slice(start, end)`), `start` and `end` will be converted to integers
 
 #### 🟣 Regex Mode `regex`
 
@@ -292,6 +286,16 @@ Under Redirect mode, pURLfy will call constructor parameter `getRedirectedUrl` t
 
 , and return a new `string` representing the redirected URL. The default implementation is to fire a `HEAD` request to the matched URL and return the `Location` header. If `continue` is not set to `false`, the new URL will be purified again.
 
+#### 🟠 Visit Mode `visit`
+
+| Param | Type | Default |
+| --- | --- | --- |
+| `ua` | `string` | `undefined` |
+| `acts` | `string[]` | `["regex:<url_pattern>"]` |
+| `continue` | `Boolean` | `true` |
+
+Under Visit mode, pURLfy will visit the URL with `ua`, and call the [processors](#-processors) specified in `acts` in order (`<url_pattern>` is `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`). The initial input to `acts` is of type `string`, i.e. the text returned by visiting the URL. If `continue` is not set to `false`, the new URL will be purified again.
+
 #### 🔵 Lambda Mode `lambda`
 
 > [!CAUTION]
@@ -318,6 +322,19 @@ Under Lambda mode, pURLfy will try to execute the lambda function specified in `
 ```
 
 If URL `https://example.com/?key=123` matches this rule, the `key` parameter will be deleted. After this operation, since `continue` is set to `false`, the URL returned by the function will not be purified again. Of course, this is not a good example, because this can be achieved by using [Blacklist mode](#-blacklist-mode-black).
+
+### 🖇️ Processors
+
+Some processors support parameters, simply append them to the function name separated by a colon (`:`): `func:arg1:arg2...:argn`. The following processors are currently supported:
+
+- `url`: `string->string`, URL decoding (`decodeURIComponent`)
+- `base64`: `string->string`, Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
+- `slice:start:end`: `string->string`, String slicing (`s.slice(start, end)`), `start` and `end` will be converted to integers
+- `regex:<regex>`: `string->string`, regex matching, returns the first match of the regex or an empty string if no match is found
+- `dom`: `string->Document`, parse the string as a HTML `Document` object
+- `sel:<selector>`: `Any->Element/null`, select the first element using CSS selector `<selector>` (The input shall have `querySelector` method)
+- `attr:<attribute>`: `Element->string`, get the value of the attribute `<attribute>` of the element (`getAttribute`)
+- `text`: `Element->string`, get the text content of the element (`textContent`)
 
 ## 😎 Projects Using pURLfy
 
