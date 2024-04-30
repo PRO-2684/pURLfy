@@ -280,7 +280,7 @@ new Purlfy({
 | `ua` | `string` | `undefined` |
 | `continue` | `Boolean` | `true` |
 
-重定向模式下，pURLfy 会调用构造时的参数 `fetch` 使用 `ua` 发送 `HEAD` 请求并返回 `Location` 标头作为重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
+重定向模式下，pURLfy 会调用构造时的参数 `fetch` 使用 `ua` 发送 `HEAD` 请求并返回 `Location` 标头或更新的 `response.url` 作为重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
 #### 🟠 访问模式 `visit`
 
@@ -293,7 +293,7 @@ new Purlfy({
 | `acts` | `string[]` | `["regex:<url_pattern>"]` |
 | `continue` | `Boolean` | `true` |
 
-在访问模式下，pURLfy 会使用 `ua` 访问 URL，然后按序调用 `acts` 中指定的 [处理器](#-处理器) 来获取页面中的链接 (`<url_pattern>` 为 `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`)。`acts` 的首个输入为 `string`，即访问当前 URL 的返回文本。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
+在访问模式下，pURLfy 会使用 `ua` 访问 URL，若网址未被重定向，则按序调用 `acts` 中指定的 [处理器](#-处理器) 来获取页面中的链接 (`<url_pattern>` 为 `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`)。`acts` 的首个输入为 `string`，即访问当前 URL 的返回文本。若网址已重定向，则返回重定向后网址。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
 #### 🔵 匿名函数模式 `lambda`
 

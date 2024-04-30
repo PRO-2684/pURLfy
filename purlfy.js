@@ -276,27 +276,33 @@ class Purlfy extends EventTarget {
                 }
                 const options = {
                     method: "GET",
-                    redirect: "follow"
+                    redirect: "follow" // TODO: "manual"
                 };
                 if (rule.ua) {
                     options.headers = {
                         "User-Agent": rule.ua
                     };
                 }
-                let html = null;
+                let r, html = null;
                 try {
-                    html = await this.#fetch(urlObj.href, options);
-                    html = await html.text();
+                    r = await this.#fetch(urlObj.href, options);
+                    html = await r.text();
                 } catch (e) {
                     logFunc("Error visiting URL:", e);
                     break;
                 }
-                const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
-                if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
-                    urlObj = new URL(dest, urlObj.href);
-                } else { // Invalid URL
-                    logFunc("Invalid URL:", dest);
-                    break;
+                const redirected = r.url !== urlObj.href;
+                if (redirected) {
+                    logFunc("Visit mode, but got redirected to:", r.url);
+                    urlObj = new URL(r.url, urlObj.href);
+                } else {
+                    const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
+                    if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
+                        urlObj = new URL(dest, urlObj.href);
+                    } else { // Invalid URL
+                        logFunc("Invalid URL:", dest);
+                        break;
+                    }
                 }
                 shallContinue = rule.continue ?? true;
                 increment.visited++;
