@@ -1,3 +1,5 @@
+<img src="./images/logo.svg" align="right" style="width: 6em; height: 6em;"></img>
+
 # pURLfy
 
 English | [简体中文](./README_zh.md)
@@ -11,7 +13,7 @@ The ultimate URL purifier.
 
 Purify URL: Remove redundant tracking parameters, skip redirecting pages, and extract the link that really matters.
 
-- ⚡ Fast: Purify URLs quickly and efficiently. (Time complexity is $O(n)$, where $n$ is the count of `/` in the URL path.)
+- ⚡ Fast: Purify URLs quickly and efficiently.
 - 🪶 Lightweight: Zero-dependency; Minified script less than 4kb.
 - 📃 Rule-based: Perform purification based on rules, making it more flexible.
 - 🔄️ Async: Calling `purify` won't block your thread.
@@ -332,3 +334,4 @@ If URL `https://example.com/?key=123` matches this rule, the `key` parameter wil
 - Thanks to [Tarnhelm](https://tarnhelm.project.ac.cn/) for providing some rules and for the initial inspiration of pURLfy.
 - Thanks to [this script](https://greasyfork.org/scripts/412612) on GreasyFork for providing some rules for pURLfy.
 - Thanks to [SearXNG](https://github.com/searxng/searxng/blob/f1a148f53e9fbd10e95baa442b40327732259f25/searx/engines/bing.py#L148) for providing Bing's purification rule.
+- The logo of pURLfy is a combination of the ["Incognito" icon](https://www.svgrepo.com/svg/527757/incognito) and the ["Ghost" icon](https://www.svgrepo.com/svg/508069/ghost) from [SVG Repo](https://www.svgrepo.com/).

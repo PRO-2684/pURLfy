@@ -1,3 +1,5 @@
+<img src="./images/logo.svg" align="right" style="width: 6em; height: 6em;"></img>
+
 # pURLfy
 
 [English](./README.md) | 简体中文
@@ -11,7 +13,7 @@
 
 净化 URL：去除多余的跟踪参数，跳过重定向界面，提取真正重要的链接。
 
-- ⚡ 快速：快速高效地净化 URL。 (时间复杂度为 $O(n)$，其中 $n$ 是 URL 路径中 `/` 的数量)
+- ⚡ 快速：快速高效地净化 URL。
 - 🪶 轻量：零依赖；最小化脚本不到 4kb。
 - 📃 基于规则：根据规则净化，更为灵活。
 - 🔄️ 异步：调用 `purify` 不会阻塞您的线程。
@@ -332,3 +334,4 @@ new Purlfy({
 - 感谢 [Tarnhelm](https://tarnhelm.project.ac.cn/) 提供的规则文件以及为 pURLfy 提供最初的灵感。
 - 感谢 GreasyFork 上的 [这个脚本](https://greasyfork.org/scripts/412612)，为 pURLfy 提供了一些规则。
 - 感谢 [SearXNG](https://github.com/searxng/searxng/blob/f1a148f53e9fbd10e95baa442b40327732259f25/searx/engines/bing.py#L148) 提供的 Bing 的净化规则。
+- pURLfy 的图标是 [SVG Repo](https://www.svgrepo.com/) 中 ["Incognito" 图标](https://www.svgrepo.com/svg/527757/incognito) 和 ["Ghost" 图标](https://www.svgrepo.com/svg/508069/ghost) 的组合。
