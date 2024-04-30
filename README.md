@@ -230,7 +230,7 @@ This table shows supported parameters for each mode:
 
 Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. `std` is for controlling whether the URL search string shall be deemed standard. Only if it is `true` or the URL search string is indeed standard will the URL be processed. Usually this is the most commonly used mode.
 
-#### 🟠 Blacklist Mode `black`
+#### 🔴 Blacklist Mode `black`
 
 | Param | Type | Default |
 | --- | --- | --- |
