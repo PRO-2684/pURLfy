@@ -241,7 +241,7 @@ class Purlfy extends EventTarget {
                 };
                 if (rule.ua) {
                     options.headers = {
-                        "User-Agent": ua
+                        "User-Agent": rule.ua
                     };
                 }
                 let dest = null;
