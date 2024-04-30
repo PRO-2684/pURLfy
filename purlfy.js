@@ -249,6 +249,8 @@ class Purlfy extends EventTarget {
                     const r = await this.#fetch(urlObj.href, options);
                     if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
                         dest = r.headers.get("location");
+                    } else if (r.url !== urlObj.href) {
+                        dest = r.url; // In case `redirect: manual` doesn't work
                     }
                 } catch (e) {
                     logFunc("Error following redirect:", e);
