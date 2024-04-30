@@ -22,16 +22,6 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 
 ## 🤔 Usage
 
-### 😎 Projects Using pURLfy
-
-> [!TIP]
-> If you are using pURLfy in your project, feel free to submit a PR to add your project here!
-
-- Our [Demo Page](https://pro-2684.github.io/?page=purlfy)
-- Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot)
-- [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
-- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
-
 ### 🚀 Quick Start
 
 Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out with our Telegram bot [@purlfy_bot](https://t.me/purlfy_bot)!
@@ -328,6 +318,16 @@ Under Lambda mode, pURLfy will try to execute the lambda function specified in `
 ```
 
 If URL `https://example.com/?key=123` matches this rule, the `key` parameter will be deleted. After this operation, since `continue` is set to `false`, the URL returned by the function will not be purified again. Of course, this is not a good example, because this can be achieved by using [Blacklist mode](#-blacklist-mode-black).
+
+## 😎 Projects Using pURLfy
+
+> [!TIP]
+> If you are using pURLfy in your project, feel free to submit a PR to add your project here!
+
+- Our [Demo Page](https://pro-2684.github.io/?page=purlfy)
+- Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot)
+- [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
+- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 
 ## 🎉 Acknowledgments
 

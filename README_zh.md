@@ -22,16 +22,6 @@
 
 ## 🤔 使用
 
-### 😎 使用 pURLfy 的项目
-
-> [!TIP]
-> 若您的项目使用了 pURLfy，欢迎提交 PR 将您的项目添加到这里！
-
-- 我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)
-- 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot)
-- [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
-- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
-
 ### 🚀 快速开始
 
 访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，或者通过我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot) 来体验！
@@ -328,6 +318,16 @@ new Purlfy({
 ```
 
 那么如果 URL `https://example.com/?key=123` 匹配到了此规则，则会删除 `key` 参数。在此操作后，因为 `continue` 被设置为 `false`，函数返回的 URL 不会被再次执行净化。当然，这并非一个很好的例子，因为这完全可以通过 [黑名单模式](#-黑名单模式-black) 来实现。
+
+## 😎 使用 pURLfy 的项目
+
+> [!TIP]
+> 若您的项目使用了 pURLfy，欢迎提交 PR 将您的项目添加到这里！
+
+- 我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)
+- 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot)
+- [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
+- [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 
 ## 🎉 鸣谢
 
