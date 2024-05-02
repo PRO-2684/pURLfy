@@ -1,35 +1,29 @@
 class Purlfy extends EventTarget {
-    redirectEnabled = false;
+    fetchEnabled = false;
     lambdaEnabled = false;
     maxIterations = 5;
     #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
-    #getRedirectedUrl = async (url, ua) => {
-        const options = {
-            method: "HEAD",
-            redirect: "manual"
-        };
-        if (ua) {
-            options.headers = {
-                "User-Agent": ua
-            };
-        }
-        const r = await fetch(url, options);
-        if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
-            const dest = r.headers.get("location");
-            return dest;
-        }
-        return null;
-    };
-    #paramDecoders = {
+    #fetch = fetch;
+    #acts = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
         "slice": (s, start, end) => s.slice(parseInt(start), end ? parseInt(end) : undefined),
+        "regex": (s, regex) => {
+            const r = new RegExp(regex);
+            const m = s.match(r);
+            return m ? m[0] : "";
+        },
+        "dom": (s) => new DOMParser().parseFromString(s, "text/html"),
+        "sel": (s, selector) => s.querySelector(selector),
+        "attr": (e, attr) => e.getAttribute(attr),
+        "text": (e) => e.textContent,
     };
     #zeroStatistics = {
         url: 0,
         param: 0,
         decoded: 0,
         redirected: 0,
+        visited: 0,
         char: 0
     };
     #statistics = { ...this.#zeroStatistics };
@@ -38,12 +32,12 @@ class Purlfy extends EventTarget {
 
     constructor(options) {
         super();
-        this.redirectEnabled = options?.redirectEnabled ?? this.redirectEnabled;
+        this.fetchEnabled = options?.fetchEnabled ?? this.fetchEnabled;
         this.lambdaEnabled = options?.lambdaEnabled ?? this.lambdaEnabled;
         this.maxIterations = options?.maxIterations ?? this.maxIterations;
         Object.assign(this.#statistics, options?.statistics);
         this.#log = options?.log ?? this.#log;
-        this.#getRedirectedUrl = options?.getRedirectedUrl ?? this.#getRedirectedUrl;
+        this.#fetch = options?.fetch ?? this.#fetch;
     }
 
     clearStatistics() {
@@ -77,11 +71,13 @@ class Purlfy extends EventTarget {
             case "black":
                 return Array.isArray(rule.params) && this.#udfOrType(rule.std, "boolean");
             case "param":
-                return Array.isArray(rule.params) && (rule.decode === undefined || Array.isArray(rule.decode)) && this.#udfOrType(rule.continue, "boolean");
+                return Array.isArray(rule.params) && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
             case "regex":
                 return Array.isArray(rule.regex) && Array.isArray(rule.replace) && this.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
             case "redirect":
-                return this.redirectEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
+            case "visit":
+                return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
             case "lambda":
                 return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof this.#AsyncFunction) && this.#udfOrType(rule.continue, "boolean");
             default:
@@ -140,6 +136,28 @@ class Purlfy extends EventTarget {
         return urlObj.searchParams.toString() === urlObj.search.slice(1);
     }
 
+    #applyActs(input, acts, logFunc) { // Apply the given acts to the given input
+        let dest = input;
+        for (const cmd of (acts)) {
+            const args = cmd.split(":");
+            const name = args[0];
+            const act = this.#acts[name];
+            if (!act) {
+                logFunc("Invalid act:", cmd);
+                dest = null;
+                break;
+            }
+            try {
+                dest = act(dest, ...args.slice(1));
+            } catch (e) {
+                logFunc(`Error processing input with act "${name}":`, e);
+                dest = null;
+                break;
+            }
+        }
+        return dest;
+    }
+
     async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
         const mode = rule.mode;
         const increment = { ...this.#zeroStatistics }; // Incremental statistics
@@ -173,7 +191,7 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "param": { // Specific param mode
-                // Decode given parameter to be used as a new URL
+                // Process given parameter to be used as a new URL
                 let paramValue = null;
                 for (const param of rule.params) { // Find the first available parameter value
                     if (urlObj.searchParams.has(param)) {
@@ -185,26 +203,8 @@ class Purlfy extends EventTarget {
                     logFunc("Parameter(s) not found:", rule.params.join(", "));
                     break;
                 }
-                let dest = paramValue;
-                let success = true;
-                for (const cmd of (rule.decode ?? ["url"])) {
-                    const args = cmd.split(":");
-                    const name = args[0];
-                    const decoder = this.#paramDecoders[name];
-                    if (!decoder) {
-                        logFunc("Invalid decoder:", cmd);
-                        success = false;
-                        break;
-                    }
-                    try {
-                        dest = decoder(dest, ...args.slice(1));
-                    } catch (e) {
-                        logFunc(`Error decoding parameter with decoder "${name}":`, e);
-                        break;
-                    }
-                }
-                if (!success) break;
-                if (URL.canParse(dest, urlObj.href)) { // Valid URL
+                const dest = this.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
+                if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                     urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", dest);
@@ -230,13 +230,27 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "redirect": { // Redirect mode
-                if (!this.redirectEnabled) {
+                if (!this.fetchEnabled) {
                     logFunc("Redirect mode is disabled.");
                     break;
                 }
+                const options = {
+                    method: "HEAD",
+                    redirect: "manual"
+                };
+                if (rule.ua) {
+                    options.headers = {
+                        "User-Agent": rule.ua
+                    };
+                }
                 let dest = null;
                 try {
-                    dest = await this.#getRedirectedUrl(urlObj.href, rule.ua);
+                    const r = await this.#fetch(urlObj.href, options);
+                    if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
+                        dest = r.headers.get("location");
+                    } else if (r.url !== urlObj.href) {
+                        dest = r.url; // In case `redirect: manual` doesn't work
+                    }
                 } catch (e) {
                     logFunc("Error following redirect:", e);
                     break;
@@ -253,6 +267,45 @@ class Purlfy extends EventTarget {
                 } else {
                     logFunc("Invalid redirect destination:", dest);
                 }
+                break;
+            }
+            case "visit": { // Visit mode
+                if (!this.fetchEnabled) {
+                    logFunc("Visit mode is disabled.");
+                    break;
+                }
+                const options = {
+                    method: "GET",
+                    redirect: "follow" // TODO: "manual"
+                };
+                if (rule.ua) {
+                    options.headers = {
+                        "User-Agent": rule.ua
+                    };
+                }
+                let r, html = null;
+                try {
+                    r = await this.#fetch(urlObj.href, options);
+                    html = await r.text();
+                } catch (e) {
+                    logFunc("Error visiting URL:", e);
+                    break;
+                }
+                const redirected = r.url !== urlObj.href;
+                if (redirected) {
+                    logFunc("Visit mode, but got redirected to:", r.url);
+                    urlObj = new URL(r.url, urlObj.href);
+                } else {
+                    const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
+                    if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
+                        urlObj = new URL(dest, urlObj.href);
+                    } else { // Invalid URL
+                        logFunc("Invalid URL:", dest);
+                        break;
+                    }
+                }
+                shallContinue = rule.continue ?? true;
+                increment.visited++;
                 break;
             }
             case "lambda": {
