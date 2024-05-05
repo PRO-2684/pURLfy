@@ -74,7 +74,7 @@ new Purlfy({
 })
 ```
 
-#### Methods
+#### Instance Methods
 
 - `importRules(rules: object): void`: Import rules.
 - `purify(url: string): Promise<object>`: Purify a URL.
@@ -90,13 +90,17 @@ new Purlfy({
     - If platform supports `CustomEvent`, the `detail` property of the event object will contain the incremental statistics.
 - `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
 
-#### Properties
+#### Instance Properties
 
 You can change these properties after instantiation, and they will take effect for the next call to `purify`.
 
 - `fetchEnabled: Boolean`: Whether the redirect mode is enabled.
 - `lambdaEnabled: Boolean`: Whether the lambda mode is enabled.
 - `maxIterations: Number`: Maximum number of iterations.
+
+#### Static Properties
+
+- `Purlfy.version: string`: The version of pURLfy.
 
 ## 📖 Rules
 

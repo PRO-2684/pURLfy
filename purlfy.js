@@ -1,4 +1,6 @@
 class Purlfy extends EventTarget {
+    // TODO: Static-ify some properties and methods
+    static version = "0.3.1-dev";
     fetchEnabled = false;
     lambdaEnabled = false;
     maxIterations = 5;
