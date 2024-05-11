@@ -74,7 +74,7 @@ new Purlfy({
 })
 ```
 
-#### 方法
+#### 实例方法
 
 - `importRules(rules: object): void`: 导入规则
 - `purify(url: string): Promise<object>`: 净化一个 URL
@@ -90,13 +90,18 @@ new Purlfy({
     - 若支持 `CustomEvent`，则其 `detail` 属性为统计数据的增量
 - `removeEventListener("statisticschange", callback: function): void`: 移除统计数据变化的事件监听器
 
-#### 属性
+#### 实例属性
 
 你可以在初始化后更改下面的属性，它们将在下次调用 `purify` 时生效。
 
 - `fetchEnabled: Boolean`: 是否启用需要网络的模式 `redirect` 和 `visit`
 - `lambdaEnabled: Boolean`: 是否启用匿名函数模式
 - `maxIterations: Number`: 最大迭代次数
+
+#### 静态属性
+
+- `Purlfy.version: string`: pURLfy 的版本号
+
 
 ## 📖 规则
 
@@ -341,7 +346,7 @@ new Purlfy({
 > 若您的项目使用了 pURLfy，欢迎提交 PR 将您的项目添加到这里！
 
 - 我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)
-- 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot)
+- 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot) ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
 - [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 

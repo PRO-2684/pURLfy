@@ -32,8 +32,8 @@ const purifier = new Purlfy({ // Instantiate a Purlfy object
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.3.x/<country>.json")).json(); // Rules
-// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.3.x/<country>.json
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.3.x/<ruleset>.json")).json(); // Rules
+// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.3.x/<ruleset>.json
 purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(additionalRules);
@@ -74,7 +74,7 @@ new Purlfy({
 })
 ```
 
-#### Methods
+#### Instance Methods
 
 - `importRules(rules: object): void`: Import rules.
 - `purify(url: string): Promise<object>`: Purify a URL.
@@ -90,13 +90,17 @@ new Purlfy({
     - If platform supports `CustomEvent`, the `detail` property of the event object will contain the incremental statistics.
 - `removeEventListener("statisticschange", callback: function): void`: Remove an event listener for statistics change.
 
-#### Properties
+#### Instance Properties
 
 You can change these properties after instantiation, and they will take effect for the next call to `purify`.
 
 - `fetchEnabled: Boolean`: Whether the redirect mode is enabled.
 - `lambdaEnabled: Boolean`: Whether the lambda mode is enabled.
 - `maxIterations: Number`: Maximum number of iterations.
+
+#### Static Properties
+
+- `Purlfy.version: string`: The version of pURLfy.
 
 ## 📖 Rules
 
@@ -341,7 +345,7 @@ Some processors support parameters, simply append them to the function name sepa
 > If you are using pURLfy in your project, feel free to submit a PR to add your project here!
 
 - Our [Demo Page](https://pro-2684.github.io/?page=purlfy)
-- Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot)
+- Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot) ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
 - [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 

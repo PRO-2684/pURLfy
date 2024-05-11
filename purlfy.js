@@ -1,10 +1,18 @@
 class Purlfy extends EventTarget {
-    fetchEnabled = false;
-    lambdaEnabled = false;
-    maxIterations = 5;
-    #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
-    #fetch = fetch;
-    #acts = {
+    // Static properties
+    static get version() {
+        return "0.3.1";
+    };
+    static #AsyncFunction = async function () { }.constructor;
+    static #zeroStatistics = {
+        url: 0,
+        param: 0,
+        decoded: 0,
+        redirected: 0,
+        visited: 0,
+        char: 0
+    };
+    static #acts = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
         "slice": (s, start, end) => s.slice(parseInt(start), end ? parseInt(end) : undefined),
@@ -18,17 +26,14 @@ class Purlfy extends EventTarget {
         "attr": (e, attr) => e.getAttribute(attr),
         "text": (e) => e.textContent,
     };
-    #zeroStatistics = {
-        url: 0,
-        param: 0,
-        decoded: 0,
-        redirected: 0,
-        visited: 0,
-        char: 0
-    };
-    #statistics = { ...this.#zeroStatistics };
+    // Instance properties
+    fetchEnabled = false;
+    lambdaEnabled = false;
+    maxIterations = 5;
+    #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
+    #fetch = fetch;
+    #statistics = { ...Purlfy.#zeroStatistics };
     #rules = {};
-    #AsyncFunction = async function () { }.constructor;
 
     constructor(options) {
         super();
@@ -40,6 +45,38 @@ class Purlfy extends EventTarget {
         this.#fetch = options?.fetch ?? this.#fetch;
     }
 
+    // Static methods
+    static #udfOrType(value, type) { // If the given value is of the given type or undefined
+        return value === undefined || typeof value === type;
+    }
+
+    static #isStandard(urlObj) { // Check if the given urlObj's search string follows the standard format
+        return urlObj.searchParams.toString() === urlObj.search.slice(1);
+    }
+
+    static #applyActs(input, acts, logFunc) { // Apply the given acts to the given input
+        let dest = input;
+        for (const cmd of (acts)) {
+            const args = cmd.split(":");
+            const name = args[0];
+            const act = Purlfy.#acts[name];
+            if (!act) {
+                logFunc("Invalid act:", cmd);
+                dest = null;
+                break;
+            }
+            try {
+                dest = act(dest, ...args.slice(1));
+            } catch (e) {
+                logFunc(`Error processing input with act "${name}":`, e);
+                dest = null;
+                break;
+            }
+        }
+        return dest;
+    }
+
+    // Instance methods
     clearStatistics() {
         const increment = {};
         for (const [key, value] of Object.entries(this.#statistics)) {
@@ -60,26 +97,22 @@ class Purlfy extends EventTarget {
         Object.assign(this.#rules, rules);
     }
 
-    #udfOrType(value, type) { // If the given value is of the given type or undefined
-        return value === undefined || typeof value === type;
-    }
-
     #validRule(rule) { // Check if the given rule is valid
         if (!rule || !rule.mode || !rule.description || !rule.author) return false;
         switch (rule.mode) {
             case "white":
             case "black":
-                return Array.isArray(rule.params) && this.#udfOrType(rule.std, "boolean");
+                return Array.isArray(rule.params) && Purlfy.#udfOrType(rule.std, "boolean");
             case "param":
-                return Array.isArray(rule.params) && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
+                return Array.isArray(rule.params) && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
             case "regex":
-                return Array.isArray(rule.regex) && Array.isArray(rule.replace) && this.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
+                return Array.isArray(rule.regex) && Array.isArray(rule.replace) && Purlfy.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
             case "redirect":
-                return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && this.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.continue, "boolean");
             case "visit":
-                return this.fetchEnabled && this.#udfOrType(rule.ua, "string") && (rule.acts === undefined || Array.isArray(rule.acts)) && this.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
             case "lambda":
-                return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof this.#AsyncFunction) && this.#udfOrType(rule.continue, "boolean");
+                return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof Purlfy.#AsyncFunction) && Purlfy.#udfOrType(rule.continue, "boolean");
             default:
                 return false;
         }
@@ -132,41 +165,28 @@ class Purlfy extends EventTarget {
         return null;
     }
 
-    #isStandard(urlObj) { // Check if the given urlObj's search string follows the standard format
-        return urlObj.searchParams.toString() === urlObj.search.slice(1);
-    }
-
-    #applyActs(input, acts, logFunc) { // Apply the given acts to the given input
-        let dest = input;
-        for (const cmd of (acts)) {
-            const args = cmd.split(":");
-            const name = args[0];
-            const act = this.#acts[name];
-            if (!act) {
-                logFunc("Invalid act:", cmd);
-                dest = null;
-                break;
-            }
-            try {
-                dest = act(dest, ...args.slice(1));
-            } catch (e) {
-                logFunc(`Error processing input with act "${name}":`, e);
-                dest = null;
-                break;
-            }
+    #incrementStatistics(increment) {
+        for (const [key, value] of Object.entries(increment)) {
+            this.#statistics[key] += value;
         }
-        return dest;
+        if (typeof CustomEvent === "function") {
+            this.dispatchEvent(new CustomEvent("statisticschange", {
+                detail: increment
+            }));
+        } else {
+            this.dispatchEvent(new Event("statisticschange"));
+        }
     }
 
     async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
         const mode = rule.mode;
-        const increment = { ...this.#zeroStatistics }; // Incremental statistics
+        const increment = { ...Purlfy.#zeroStatistics }; // Incremental statistics
         const lengthBefore = urlObj.href.length;
         const paramsCntBefore = urlObj.searchParams.size;
         let shallContinue = false;
         switch (mode) { // Purifies `urlObj` based on the rule
             case "white": { // Whitelist mode
-                if (!rule.std && !this.#isStandard(urlObj)) {
+                if (!rule.std && !Purlfy.#isStandard(urlObj)) {
                     logFunc("Non-standard URL search string:", urlObj.search);
                     break;
                 }
@@ -180,7 +200,7 @@ class Purlfy extends EventTarget {
                 break;
             }
             case "black": { // Blacklist mode
-                if (!rule.std && !this.#isStandard(urlObj)) {
+                if (!rule.std && !Purlfy.#isStandard(urlObj)) {
                     logFunc("Non-standard URL search string:", urlObj.search);
                     break;
                 }
@@ -203,7 +223,7 @@ class Purlfy extends EventTarget {
                     logFunc("Parameter(s) not found:", rule.params.join(", "));
                     break;
                 }
-                const dest = this.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
+                const dest = Purlfy.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
                 if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                     urlObj = new URL(dest, urlObj.href);
                 } else { // Invalid URL
@@ -296,7 +316,7 @@ class Purlfy extends EventTarget {
                     logFunc("Visit mode, but got redirected to:", r.url);
                     urlObj = new URL(r.url, urlObj.href);
                 } else {
-                    const dest = this.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
+                    const dest = Purlfy.#applyActs(html, rule.acts ?? ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
                     if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                         urlObj = new URL(dest, urlObj.href);
                     } else { // Invalid URL
@@ -314,7 +334,7 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 try {
-                    const lambda = typeof rule.lambda === "string" ? new this.#AsyncFunction("url", rule.lambda) : rule.lambda;
+                    const lambda = typeof rule.lambda === "string" ? new Purlfy.#AsyncFunction("url", rule.lambda) : rule.lambda;
                     rule.lambda = lambda; // "Cache" the compiled lambda function
                     urlObj = await lambda(urlObj);
                     shallContinue = rule.continue ?? true;
@@ -334,21 +354,8 @@ class Purlfy extends EventTarget {
         return [urlObj, shallContinue, increment];
     }
 
-    #incrementStatistics(increment) {
-        for (const [key, value] of Object.entries(increment)) {
-            this.#statistics[key] += value;
-        }
-        if (typeof CustomEvent === "function") {
-            this.dispatchEvent(new CustomEvent("statisticschange", {
-                detail: increment
-            }));
-        } else {
-            this.dispatchEvent(new Event("statisticschange"));
-        }
-    }
-
     async purify(originalUrl) { // Purify the given URL based on `rules`
-        let increment = { ...this.#zeroStatistics }; // Incremental statistics of a single purification
+        let increment = { ...Purlfy.#zeroStatistics }; // Incremental statistics of a single purification
         let shallContinue = true;
         let firstRule = null;
         let iteration = 0;
