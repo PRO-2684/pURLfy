@@ -1,7 +1,7 @@
 class Purlfy extends EventTarget {
     // Static properties
     static get version() {
-        return "0.3.1";
+        return "0.3.2";
     };
     static #AsyncFunction = async function () { }.constructor;
     static #zeroStatistics = {
@@ -108,9 +108,9 @@ class Purlfy extends EventTarget {
             case "regex":
                 return Array.isArray(rule.regex) && Array.isArray(rule.replace) && Purlfy.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
             case "redirect":
-                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.headers, "object") && Purlfy.#udfOrType(rule.continue, "boolean");
             case "visit":
-                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
+                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.headers, "object") && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
             case "lambda":
                 return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof Purlfy.#AsyncFunction) && Purlfy.#udfOrType(rule.continue, "boolean");
             default:
@@ -256,12 +256,11 @@ class Purlfy extends EventTarget {
                 }
                 const options = {
                     method: "HEAD",
-                    redirect: "manual"
+                    redirect: "manual",
+                    headers: rule.headers ?? {}
                 };
                 if (rule.ua) {
-                    options.headers = {
-                        "User-Agent": rule.ua
-                    };
+                    options.headers["User-Agent"] = rule.ua;
                 }
                 let dest = null;
                 try {
@@ -296,12 +295,11 @@ class Purlfy extends EventTarget {
                 }
                 const options = {
                     method: "GET",
-                    redirect: "follow" // TODO: "manual"
+                    redirect: "manual",
+                    headers: rule.headers ?? {}
                 };
                 if (rule.ua) {
-                    options.headers = {
-                        "User-Agent": rule.ua
-                    };
+                    options.headers["User-Agent"] = rule.ua;
                 }
                 let r, html = null;
                 try {

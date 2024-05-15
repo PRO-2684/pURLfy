@@ -222,7 +222,8 @@ This table shows supported parameters for each mode:
 | `acts`     | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| `ua`       | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
+| ~~`ua`~~   | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
+| `headers`  | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
 | `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
@@ -281,10 +282,13 @@ If you'd like to learn more about the syntax of the "replacement string", please
 
 | Param | Type | Default |
 | --- | --- | --- |
-| `ua` | `string` | `undefined` |
+| ~~`ua`~~ | `string` | `undefined` |
+| `headers` | `object` | `{}` |
 | `continue` | `Boolean` | `true` |
 
-Under Redirect mode, pURLfy will call constructor parameter `fetch` to get the redirected URL, by firing a `HEAD` request using `ua` to the matched URL and return the `Location` header or the updated `response.url`. If `continue` is not set to `false`, the new URL will be purified again.
+Under Redirect mode, pURLfy will call constructor parameter `fetch` to get the redirected URL, by firing a `HEAD` request using `headers` as the headers to the matched URL and return the `Location` header or the updated `response.url`. If `continue` is not set to `false`, the new URL will be purified again.
+
+Note: `ua` parameter will be deprecated in the future, and you should use `headers` to set the `User-Agent` header.
 
 #### 🟠 Visit Mode `visit`
 
@@ -293,11 +297,14 @@ Under Redirect mode, pURLfy will call constructor parameter `fetch` to get the r
 
 | Param | Type | Default |
 | --- | --- | --- |
-| `ua` | `string` | `undefined` |
+| ~~`ua`~~ | `string` | `undefined` |
+| `headers` | `object` | `{}` |
 | `acts` | `string[]` | `["regex:<url_pattern>"]` |
 | `continue` | `Boolean` | `true` |
 
-Under Visit mode, pURLfy will visit the URL with `ua`, and if the URL has not beed redirected, it will call the [processors](#-processors) specified in `acts` in order (`<url_pattern>` is `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`). The initial input to `acts` is of type `string`, i.e. the text returned by visiting the URL. If the URL has been redirected, the redirected URL will be returned. If `continue` is not set to `false`, the new URL will be purified again.
+Under Visit mode, pURLfy will visit the URL with `headers` as the headers, and if the URL has not beed redirected, it will call the [processors](#-processors) specified in `acts` in order (`<url_pattern>` is `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`). The initial input to `acts` is of type `string`, i.e. the text returned by visiting the URL. If the URL has been redirected, the redirected URL will be returned. If `continue` is not set to `false`, the new URL will be purified again.
+
+Note: `ua` parameter will be deprecated in the future, and you should use `headers` to set the `User-Agent` header.
 
 #### 🔵 Lambda Mode `lambda`
 
