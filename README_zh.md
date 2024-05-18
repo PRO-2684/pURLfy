@@ -362,4 +362,4 @@ new Purlfy({
 - 感谢 [Tarnhelm](https://tarnhelm.project.ac.cn/) 提供的规则文件以及为 pURLfy 提供最初的灵感。
 - 感谢 GreasyFork 上的 [这个脚本](https://greasyfork.org/scripts/412612)，为 pURLfy 提供了一些规则。
 - 感谢 [SearXNG](https://github.com/searxng/searxng/blob/f1a148f53e9fbd10e95baa442b40327732259f25/searx/engines/bing.py#L148) 提供的 Bing 的净化规则。
-- pURLfy 的图标是 [SVG Repo](https://www.svgrepo.com/) 中 ["Incognito" 图标](https://www.svgrepo.com/svg/527757/incognito) 和 ["Ghost" 图标](https://www.svgrepo.com/svg/508069/ghost) 的组合。
+- pURLfy 的图标是 [SVG Repo](https://www.svgrepo.com/) 中 ["Incognito" 图标](https://www.svgrepo.com/svg/527757/incognito) 和 ["Ghost" 图标](https://www.svgrepo.com/svg/508069/ghost) 的组合。使用了 [inkScape](https://inkscape.org/) 来组合，[SVGOMG](https://jakearchibald.github.io/svgomg/) 来优化 SVG 文件。
