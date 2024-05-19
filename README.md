@@ -1,4 +1,4 @@
-<img src="./images/logo.svg" align="right" style="width: 6em; height: 6em;"></img>
+<img src="./images/logo.svg" align="right" style="height: 6em;"></img>
 
 # pURLfy
 
