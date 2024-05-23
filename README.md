@@ -133,8 +133,9 @@ Community-contributed rules files are hosted on GitHub, and you can find them at
 - Note that if it starts with `/`, it will be treated as a RegExp pattern.
     - For example, `/^.+\.example\.com$` will match all subdomains of `example.com`, and `/^\d+$` will match a part of path that contains only digits.
     - Do remember to escape `\`, `.` etc in JSON strings.
+    - Empty regex will be ignored. (i.e. `/` or `//`)
     - Using RegExp is not recommended unless necessary, since it will slow down the matching process.
-- If it's an empty string `""`, it will be treated as a **FallBack** rule: this rule will be used when no other rules are matched at this level.
+- If it's an empty string, it will be treated as a **FallBack** rule: this rule will be used when no other rules are matched at this level.
 - If there's multiple rules matched, the **best matched rule** will be used. (Exact match > RegExp match > FallBack rule)
 - If you want a rule to match all paths under a domain, you can omit `<path>`, but remember to remove the `/` after the domain.
 

@@ -139,7 +139,9 @@ class Purlfy extends EventTarget {
                     if (!key.startsWith("/")) continue; // Skip non-RegExp keys
                     try {
                         const sub = key.endsWith("/"); // Has sub-rules
-                        const regex = new RegExp(sub ? key.slice(1, -1) : key.slice(1));
+                        const regexStr = sub ? key.slice(1, -1) : key.slice(1);
+                        if (regexStr === "") continue; // Skip empty regex
+                        const regex = new RegExp(regexStr);
                         if (regex.test(part)) { // Regex matches
                             if (!sub && this.#validRule(val)) {
                                 return val; // Regex match found
