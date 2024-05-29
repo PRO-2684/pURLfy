@@ -218,7 +218,7 @@ This table shows supported parameters for each mode:
 
 | Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `visit` | `lambda` |
 | ---------- | -- | --- | -- | --- | -- | --- | -- |
-| `std`      | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `std`      | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `acts`     | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
@@ -233,9 +233,8 @@ This table shows supported parameters for each mode:
 | Param | Type | Default |
 | --- | --- | --- |
 | `params` | `string[]` | Required |
-| `std` | `Boolean` | `false` |
 
-Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. `std` is for controlling whether the URL search string shall be deemed standard. Only if it is `true` or the URL search string is indeed standard will the URL be processed. Usually this is the most commonly used mode.
+Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. Usually this is the most commonly used mode.
 
 #### 🔴 Blacklist Mode `black`
 

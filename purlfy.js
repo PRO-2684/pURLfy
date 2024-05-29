@@ -188,10 +188,6 @@ class Purlfy extends EventTarget {
         let shallContinue = false;
         switch (mode) { // Purifies `urlObj` based on the rule
             case "white": { // Whitelist mode
-                if (!rule.std && !Purlfy.#isStandard(urlObj)) {
-                    logFunc("Non-standard URL search string:", urlObj.search);
-                    break;
-                }
                 const newParams = new URLSearchParams();
                 for (const param of rule.params) {
                     if (urlObj.searchParams.has(param)) {
