@@ -1,7 +1,7 @@
 class Purlfy extends EventTarget {
     // Static properties
     static get version() {
-        return "0.3.2";
+        return "0.3.3";
     };
     static #AsyncFunction = async function () { }.constructor;
     static #zeroStatistics = {
