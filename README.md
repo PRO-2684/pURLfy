@@ -358,7 +358,5 @@ Some processors support parameters, simply append them to the function name sepa
 
 ## 🎉 Acknowledgments
 
-- Thanks to [Tarnhelm](https://tarnhelm.project.ac.cn/) for providing some rules and for the initial inspiration of pURLfy.
-- Thanks to [this script](https://greasyfork.org/scripts/412612) on GreasyFork for providing some rules for pURLfy.
-- Thanks to [SearXNG](https://github.com/searxng/searxng/blob/f1a148f53e9fbd10e95baa442b40327732259f25/searx/engines/bing.py#L148) for providing Bing's purification rule.
+- Thanks to [Tarnhelm](https://tarnhelm.project.ac.cn/) for the initial inspiration of pURLfy.
 - The logo of pURLfy is a combination of the ["Incognito" icon](https://www.svgrepo.com/svg/527757/incognito) and the ["Ghost" icon](https://www.svgrepo.com/svg/508069/ghost) from [SVG Repo](https://www.svgrepo.com/). It is combined using [inkScape](https://inkscape.org/) and optimized using [SVGOMG](https://jakearchibald.github.io/svgomg/).
