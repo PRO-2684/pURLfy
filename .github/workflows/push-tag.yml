@@ -1,0 +1,40 @@
+name: "push-tag"
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'purlfy.js'
+
+jobs:
+  push-tag:
+    name: "Push tag"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout Repository"
+        uses: "actions/checkout@v4"
+        with:
+          ssh-key: "${{ secrets.COMMIT_KEY }}"
+          fetch-depth: 16 # Ensure we can get the previous version
+
+      - name: "Read versions from js file"
+        id: read-versions
+        run: |
+          version=$(sed -n 's/.*return "\([0-9]\+\.[0-9]\+\.[0-9]\+\)".*/\1/p' purlfy.js)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Version: $version"
+          previous_version=$(git show HEAD^:purlfy.js | sed -n 's/.*return "\([0-9]\+\.[0-9]\+\.[0-9]\+\)".*/\1/p')
+          echo "previous-version=$previous_version" >> "$GITHUB_OUTPUT"
+          echo "Previous version: $previous_version"
+
+      - name: "Push tag"
+        if: ${{ steps.read-versions.outputs.version != steps.read-versions.outputs.previous-version }}
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          echo "Creating a tag..."
+          git tag -a "v${{ steps.read-versions.outputs.version }}" -m "Release v${{ steps.read-versions.outputs.version }}"
+          git push origin "v${{ steps.read-versions.outputs.version }}"
+          echo "Done!"
