@@ -111,10 +111,10 @@ Community-contributed rules files are hosted on GitHub, and you can find them at
     "<domain>": {
         "<path>": {
             // A single rule
-            "description": "<规则描述>",
-            "mode": "<模式>",
+            "description": "<description>",
+            "mode": "<mode>",
             // Other parameters
-            "author": "<作者>"
+            "author": "<author>"
         },
         // ...
     },
@@ -321,7 +321,7 @@ Under Lambda mode, pURLfy will try to execute the lambda function specified in `
 ```jsonc
 {
     "example.com": {
-        "description": "示例",
+        "description": "example",
         "mode": "lambda",
         "lambda": "url.searchParams.delete('key'); return url;",
         "continue": false,
