@@ -361,3 +361,7 @@ new Purlfy({
 
 - 感谢 [Tarnhelm](https://tarnhelm.project.ac.cn/) 为 pURLfy 提供最初的灵感。
 - pURLfy 的图标是 [SVG Repo](https://www.svgrepo.com/) 中 ["Incognito" 图标](https://www.svgrepo.com/svg/527757/incognito) 和 ["Ghost" 图标](https://www.svgrepo.com/svg/508069/ghost) 的组合。使用了 [inkScape](https://inkscape.org/) 来组合，[SVGOMG](https://jakearchibald.github.io/svgomg/) 来优化 SVG 文件。
+
+## ⭐ Star History
+
+[![Stargazers over time](https://starchart.cc/PRO-2684/pURLfy.svg?variant=adaptive)](https://starchart.cc/PRO-2684/pURLfy)

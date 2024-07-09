@@ -360,3 +360,7 @@ Some processors support parameters, simply append them to the function name sepa
 
 - Thanks to [Tarnhelm](https://tarnhelm.project.ac.cn/) for the initial inspiration of pURLfy.
 - The logo of pURLfy is a combination of the ["Incognito" icon](https://www.svgrepo.com/svg/527757/incognito) and the ["Ghost" icon](https://www.svgrepo.com/svg/508069/ghost) from [SVG Repo](https://www.svgrepo.com/). It is combined using [inkScape](https://inkscape.org/) and optimized using [SVGOMG](https://jakearchibald.github.io/svgomg/).
+
+## ⭐ Star History
+
+[![Stargazers over time](https://starchart.cc/PRO-2684/pURLfy.svg?variant=adaptive)](https://starchart.cc/PRO-2684/pURLfy)
