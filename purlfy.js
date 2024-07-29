@@ -245,6 +245,7 @@ class Purlfy extends EventTarget {
                     logFunc("Invalid URL:", newUrl);
                     break;
                 }
+                shallContinue = rule.continue ?? true;
                 break;
             }
             case "redirect": { // Redirect mode
