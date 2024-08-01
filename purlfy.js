@@ -1,9 +1,21 @@
 class Purlfy extends EventTarget {
     // Static properties
+    /**
+     * Returns the version of the library.
+     * @returns {string} The version of the library.
+     */
     static get version() {
         return "0.3.6";
     };
+    /**
+     * The constructor of the AsyncFunction class.
+     * @type {Function}
+     */
     static #AsyncFunction = async function () { }.constructor;
+    /**
+     * The initial statistics object. (All values are 0)
+     * @type {Object}
+     */
     static #zeroStatistics = {
         url: 0,
         param: 0,
@@ -12,6 +24,10 @@ class Purlfy extends EventTarget {
         visited: 0,
         char: 0
     };
+    /**
+     * The default acts for URL purification.
+     * @type {Object}
+     */
     static #acts = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
@@ -27,14 +43,52 @@ class Purlfy extends EventTarget {
         "text": (e) => e.textContent,
     };
     // Instance properties
+    /**
+     * Whether to enable the fetch mode.
+     * @type {boolean}
+     */
     fetchEnabled = false;
+    /**
+     * Whether to enable the lambda mode.
+     * @type {boolean}
+     */
     lambdaEnabled = false;
+    /**
+     * The maximum number of iterations for purification.
+     * @type {number}
+     */
     maxIterations = 5;
+    /**
+     * The logger function.
+     * @type {Function}
+     */
     #log = console.log.bind(console, "\x1b[38;2;220;20;60m[pURLfy]\x1b[0m");
+    /**
+     * The fetch function.
+     * @type {Function}
+     */
     #fetch = fetch;
+    /**
+     * The statistics object.
+     * @type {Object}
+     */
     #statistics = { ...Purlfy.#zeroStatistics };
+    /**
+     * The rules object.
+     * @type {Object}
+     */
     #rules = {};
 
+    /**
+     * Creates a new instance of the Purlfy class.
+     * @param {Object} [options] The options for the instance.
+     * @param {boolean} [options.fetchEnabled] Whether to enable the fetch mode.
+     * @param {boolean} [options.lambdaEnabled] Whether to enable the lambda mode.
+     * @param {number} [options.maxIterations] The maximum number of iterations for purification.
+     * @param {Object} [options.statistics] The statistics object.
+     * @param {Function} [options.log] The logger function.
+     * @param {Function} [options.fetch] The fetch function.
+     */
     constructor(options) {
         super();
         this.fetchEnabled = options?.fetchEnabled ?? this.fetchEnabled;
@@ -46,15 +100,33 @@ class Purlfy extends EventTarget {
     }
 
     // Static methods
-    static #udfOrType(value, type) { // If the given value is of the given type or undefined
+    /**
+     * Checks if the given value is of the given type or undefined.
+     * @param {*} value The value to check.
+     * @param {string} type The type to check.
+     * @returns {boolean} Whether the given value is of the given type or undefined.
+     */
+    static #udfOrType(value, type) {
         return value === undefined || typeof value === type;
     }
 
-    static #isStandard(urlObj) { // Check if the given urlObj's search string follows the standard format
+    /**
+     * Checks if the given URL object's search string follows the standard format.
+     * @param {URL} urlObj The URL object to check.
+     * @returns {boolean} Whether the given URL object's search string follows the standard format.
+     */
+    static #isStandard(urlObj) {
         return urlObj.searchParams.toString() === urlObj.search.slice(1);
     }
 
-    static #applyActs(input, acts, logFunc) { // Apply the given acts to the given input
+    /**
+     * Applies the given acts to the given input.
+     * @param {string} input The input to apply the acts to.
+     * @param {string[]} acts The acts to apply.
+     * @param {Function} logFunc The logger function.
+     * @returns {string} The result of applying the given acts to the given input.
+     */
+    static #applyActs(input, acts, logFunc) {
         let dest = input;
         for (const cmd of (acts)) {
             const args = cmd.split(":");
@@ -77,6 +149,10 @@ class Purlfy extends EventTarget {
     }
 
     // Instance methods
+    /**
+     * Clears the statistics.
+     * @returns {void}
+     */
     clearStatistics() {
         const increment = {};
         for (const [key, value] of Object.entries(this.#statistics)) {
@@ -85,19 +161,37 @@ class Purlfy extends EventTarget {
         this.#incrementStatistics(increment);
     }
 
+    /**
+     * Clears the rules.
+     * @returns {void}
+     */
     clearRules() {
         this.#rules = {};
     }
 
+    /**
+     * Gets the statistics.
+     * @returns {Object} The statistics.
+     */
     getStatistics() {
         return { ...this.#statistics };
     }
 
+    /**
+     * Imports the given rules.
+     * @param {Object} rules The rules to import.
+     * @returns {void}
+     */
     importRules(rules) {
         Object.assign(this.#rules, rules);
     }
 
-    #validRule(rule) { // Check if the given rule is valid
+    /**
+     * Checks if the given rule is valid.
+     * @param {Object} rule The rule to check.
+     * @returns {boolean} Whether the given rule is valid.
+     */
+    #validRule(rule) {
         if (!rule || !rule.mode || !rule.description || !rule.author) return false;
         switch (rule.mode) {
             case "white":
@@ -118,7 +212,12 @@ class Purlfy extends EventTarget {
         }
     }
 
-    #matchRule(parts) { // Iteratively match the longest rule for the given URL parts
+    /**
+     * Iteratively matches the longest rule for the given URL parts.
+     * @param {string[]} parts The URL parts to match.
+     * @returns {Object|null} The matched rule.
+     */
+    #matchRule(parts) {
         let fallbackRule = null; // Most precise fallback rule
         let currentRules = this.#rules;
         for (const part of parts) {
@@ -167,6 +266,11 @@ class Purlfy extends EventTarget {
         return null;
     }
 
+    /**
+     * Increments the statistics.
+     * @param {Object} increment The incremental statistics.
+     * @returns {void}
+     */
     #incrementStatistics(increment) {
         for (const [key, value] of Object.entries(increment)) {
             this.#statistics[key] += value;
@@ -180,7 +284,14 @@ class Purlfy extends EventTarget {
         }
     }
 
-    async #applyRule(urlObj, rule, logFunc) { // Apply the given rule to the given URL object, returning the new URL object, whether to continue and the mode-specific incremental statistics
+    /**
+     * Applies the given rule to the given URL object.
+     * @param {URL} urlObj The URL object to apply the rule to.
+     * @param {Object} rule The rule to apply.
+     * @param {Function} logFunc The logger function.
+     * @returns {Promise<[URL, boolean, Object]>} The new URL object, whether to continue and the mode-specific incremental statistics.
+     */
+    async #applyRule(urlObj, rule, logFunc) {
         const mode = rule.mode;
         const increment = { ...Purlfy.#zeroStatistics }; // Incremental statistics
         const lengthBefore = urlObj.href.length;
@@ -351,7 +462,12 @@ class Purlfy extends EventTarget {
         return [urlObj, shallContinue, increment];
     }
 
-    async purify(originalUrl) { // Purify the given URL based on `rules`
+    /**
+     * Purifies the given URL based on the rules.
+     * @param {string} originalUrl The original URL to purify.
+     * @returns {Promise<Object>} The purified URL and the rule applied.
+     */
+    async purify(originalUrl) {
         let increment = { ...Purlfy.#zeroStatistics }; // Incremental statistics of a single purification
         let shallContinue = true;
         let firstRule = null;
