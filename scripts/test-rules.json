@@ -1,0 +1,67 @@
+{
+	"b23.tv": {
+		"description": "哔哩哔哩短链",
+		"mode": "redirect",
+		"author": "PRO-2684"
+	},
+	"link.mcmod.cn/": {
+		"target": {
+			"description": "MC 百科外链",
+			"mode": "lambda",
+			"lambda": "const parts = url.pathname.split('/'); const newParts = parts[parts.length - 1].split('@'); return new URL(newParts.map(s => decodeURIComponent(escape(atob(s)))).join('?'));",
+			"author": "PRO-2684"
+		}
+	},
+	"m.bilibili.com": {
+		"description": "哔哩哔哩移动端",
+		"mode": "regex",
+		"regex": ["^https?://m\\.bilibili\\.com"],
+		"replace": ["https://www.bilibili.com"],
+		"continue": true,
+		"author": "PRO-2684"
+	},
+	"www.bilibili.com/": {
+		"video": {
+			"description": "哔哩哔哩视频",
+			"mode": "white",
+			"params": [
+				"t"
+			],
+			"author": "PRO-2684"
+		}
+	},
+    "www.bing.com/": {
+        "search": {
+            "description": "Bing 搜索",
+            "mode": "white",
+            "params": [
+                "q",
+                "filters",
+                "first"
+            ],
+            "author": "PRO-2684"
+        },
+        "ck/": {
+            "a": {
+                "description": "Bing 搜索结果",
+                "mode": "param",
+                "params": [
+                    "u"
+                ],
+                "acts": [
+                    "slice:2",
+                    "base64"
+                ],
+                "author": "PRO-2684"
+            }
+        },
+        "": {
+            "description": "Bing FallBack",
+            "mode": "black",
+            "params": [
+                "FORM"
+            ],
+            "author": "PRO-2684"
+        }
+    }
+}

@@ -4,6 +4,7 @@
   "description": "The ultimate URL purifier.",
   "main": "purlfy.js",
   "scripts": {
+    "test": "node ./scripts/test.js",
     "prepare": "",
     "postversion": "node ./scripts/postversion.js"
   },
@@ -17,8 +18,11 @@
     "purlfy"
   ],
   "files": [
+    "images",
+    "scripts",
     "purlfy.js",
     "LICENSE",
+    "README_zh.md",
     "README.md"
   ],
   "author": "PRO-2684",

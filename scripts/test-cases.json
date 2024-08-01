@@ -1,0 +1,27 @@
+[
+    {
+        "mode": "redirect",
+        "input": "https://b23.tv/SI6OEcv",
+        "output": "https://www.bilibili.com/video/BV1GJ411x7h7"
+    }, {
+        "mode": "lambda",
+        "input": "https://link.mcmod.cn/target/aHR0cHM6Ly9naXRodWIuY29tL3dheTJtdWNobm9pc2UvQmV0dGVyQWR2YW5jZW1lbnRz",
+        "output": "https://github.com/way2muchnoise/BetterAdvancements"
+    }, {
+        "mode": "regex",
+        "input": "https://m.bilibili.com/video/BV1GJ411x7h7/",
+        "output": "https://www.bilibili.com/video/BV1GJ411x7h7/"
+    }, {
+        "mode": "white",
+        "input": "https://www.bing.com/search?q=purlfy&filters=ex1%3A%22ez5_19571_19936%22&qs=n&form=QBRE&sp=-1&lq=0&pq=purlfy&sc=13-6&sk=&cvid=0&ghsh=0&ghacc=0&ghpl=",
+        "output": "https://www.bing.com/search?q=purlfy&filters=ex1%3A%22ez5_19571_19936%22"
+    }, {
+        "mode": "param",
+        "input": "https://www.bing.com/ck/a?!&&p=de70ef254652193fJmltdHM9MTcxMjYyMDgwMCZpZ3VpZD0wMzhlNjdlMy1mN2I2LTZmMDktMGE3YS03M2JlZjZhMzZlOGMmaW5zaWQ9NTA2Nw&ptn=3&ver=2&hsh=3&fclid=038e67e3-f7b6-6f09-0a7a-73bef6a36e8c&psq=anti&u=a1aHR0cHM6Ly9nby5taWNyb3NvZnQuY29tL2Z3bGluay8_bGlua2lkPTg2ODkyMg&ntb=1",
+        "output": "https://go.microsoft.com/fwlink/?linkid=868922"
+    }, {
+        "mode": "black",
+        "input": "https://www.bing.com/?FORM=Z9FD1",
+        "output": "https://www.bing.com/"
+    }
+]
