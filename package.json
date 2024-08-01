@@ -1,0 +1,29 @@
+{
+  "name": "purlfy",
+  "version": "0.3.5",
+  "description": "The ultimate URL purifier.",
+  "main": "purlfy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PRO-2684/pURLfy.git"
+  },
+  "keywords": [
+    "purifier",
+    "url-cleaning",
+    "purlfy"
+  ],
+  "files": [
+    "purlfy.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "author": "PRO-2684",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/PRO-2684/pURLfy/issues"
+  },
+  "homepage": "https://github.com/PRO-2684/pURLfy#readme"
+}
