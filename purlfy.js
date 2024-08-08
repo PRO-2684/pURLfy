@@ -350,7 +350,8 @@ class Purlfy extends EventTarget {
                     const replace = rule.replace[i];
                     newUrl = newUrl.replaceAll(regex, replace);
                 }
-                if (URL.canParse(newUrl, urlObj.href)) { // Valid URL
+                newUrl = Purlfy.#applyActs(newUrl, rule.acts ?? [], logFunc);
+                if (newUrl && URL.canParse(newUrl, urlObj.href)) { // Valid URL
                     urlObj = new URL(newUrl, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", newUrl);
@@ -475,7 +476,7 @@ class Purlfy extends EventTarget {
         let urlObj;
         this.#log("Purifying URL:", originalUrl);
         const optionalLocation = typeof location !== 'undefined' ? location.href : undefined;
-        if (URL.canParse(originalUrl, optionalLocation)) {
+        if (originalUrl && URL.canParse(originalUrl, optionalLocation)) {
             urlObj = new URL(originalUrl, optionalLocation);
         } else {
             this.#log(`Cannot parse URL ${originalUrl}`);

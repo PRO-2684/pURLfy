@@ -221,7 +221,7 @@ new Purlfy({
 | ---------- | -- | --- | -- | --- | -- | --- | -- |
 | `std`      | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `acts`     | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| `acts`     | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | ~~`ua`~~   | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
@@ -265,6 +265,7 @@ new Purlfy({
 
 | 参数 | 类型 | 默认值 |
 | --- | --- | --- |
+| `acts` | `string[]` | `[]` |
 | `regex` | `string[]` | 必须 |
 | `replace` | `string[]` | 必须 |
 | `continue` | `Boolean` | `true` |
@@ -273,6 +274,7 @@ new Purlfy({
 
 1. 在 URL 中匹配 `regex` 中指定的正则表达式
 2. 替换所有匹配到的部分为 `replace` 中指定的“替换字符串”
+3. 使用 `acts` 数组中指定的 [处理器](#-处理器) 依次对结果进行解码 (若任一 `acts` 值无效或执行出错，则认定失败，返回原 URL)
 
 若您想要了解“替换字符串”的语法，请参考 [MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E6%8C%87%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E6%9B%BF%E6%8D%A2%E9%A1%B9)。
 

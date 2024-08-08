@@ -220,7 +220,7 @@ This table shows supported parameters for each mode:
 | ---------- | -- | --- | -- | --- | -- | --- | -- |
 | `std`      | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `acts`     | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| `acts`     | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
 | `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | ~~`ua`~~   | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
@@ -264,6 +264,7 @@ Under Specific Parameter mode, pURLfy will:
 
 | Param | Type | Default |
 | --- | --- | --- |
+| `acts` | `string[]` | `[]` |
 | `regex` | `string[]` | Required |
 | `replace` | `string[]` | Required |
 | `continue` | `Boolean` | `true` |
@@ -272,6 +273,7 @@ Under Regex mode, pURLfy will, for each `regex`-`replace` pair:
 
 1. Match the RegExp pattern specified in `regex` against the URL.
 2. Replace all matched parts with the "replacement string" specified in `replace`.
+3. Decode the result using the [processors](#-processors) specified in the `acts` array in order (if any `acts` value is invalid or throws an error, it is considered a failure and the original URL is returned).
 
 If you'd like to learn more about the syntax of the "replacement string", please refer to the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement).
 
