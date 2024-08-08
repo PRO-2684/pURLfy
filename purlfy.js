@@ -351,7 +351,7 @@ class Purlfy extends EventTarget {
                     newUrl = newUrl.replaceAll(regex, replace);
                 }
                 if (URL.canParse(newUrl, urlObj.href)) { // Valid URL
-                    urlObj = new URL(newUrl);
+                    urlObj = new URL(newUrl, urlObj.href);
                 } else { // Invalid URL
                     logFunc("Invalid URL:", newUrl);
                     break;

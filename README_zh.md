@@ -342,7 +342,7 @@ new Purlfy({
 - `base64`: `string->string`，Base64 解码 (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
 - `slice:start:end`: `string->string`，截取字符串 (`s.slice(start, end)`)，`start` 和 `end` 会被转换为整数
 - `regex:<regex>`: `string->string`，正则表达式处理器，返回正则表达式 `<regex>` 的第一个匹配或空字符串
-- `dom`: `string->Document`，将字符串解析为 HTML `Document` 对象
+- `dom`: `string->Document`，将字符串解析为 HTML `Document` 对象 (若在 Node.js 中使用，需要自行在全局定义 `DOMParser`)
 - `sel:<selector>`: `Any->Element/null`，使用 CSS 选择器 `<selector>` 选择元素 (传入参数需要有 `querySelector` 方法)
 - `attr:<attribute>`: `Element->string`，获取元素的属性 `<attribute>` (`getAttribute`)
 - `text`: `Element->string`，获取元素的文本内容 (`textContent`)

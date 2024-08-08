@@ -341,7 +341,7 @@ Some processors support parameters, simply append them to the function name sepa
 - `base64`: `string->string`, Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
 - `slice:start:end`: `string->string`, String slicing (`s.slice(start, end)`), `start` and `end` will be converted to integers
 - `regex:<regex>`: `string->string`, regex matching, returns the first match of the regex or an empty string if no match is found
-- `dom`: `string->Document`, parse the string as a HTML `Document` object
+- `dom`: `string->Document`, parse the string as a HTML `Document` object (you'll need to define `DOMParser` globally if using in Node.js)
 - `sel:<selector>`: `Any->Element/null`, select the first element using CSS selector `<selector>` (The input shall have `querySelector` method)
 - `attr:<attribute>`: `Element->string`, get the value of the attribute `<attribute>` of the element (`getAttribute`)
 - `text`: `Element->string`, get the text content of the element (`textContent`)
