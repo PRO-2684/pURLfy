@@ -120,6 +120,39 @@ class Purlfy extends EventTarget {
     }
 
     /**
+     * Checks if the given item is an object.
+     * @param {*} item The item to check.
+     * @returns {boolean} Whether the given item is an object.
+     * @see https://stackoverflow.com/questions/27936772
+     */
+    static #isObject(item) {
+        return (item && typeof item === 'object' && !Array.isArray(item));
+    }
+
+    /**
+     * Merges the given objects deeply.
+     * @param {Object} target The target object to merge into.
+     * @param {...Object} sources The source objects to merge.
+     * @returns {Object} The merged object.
+     * @see https://stackoverflow.com/questions/27936772
+     */
+    static #mergeDeep(target, ...sources) {
+        if (!sources.length) return target;
+        const source = sources.shift();
+        if (Purlfy.#isObject(target) && Purlfy.#isObject(source)) {
+            for (const key in source) {
+                if (Purlfy.#isObject(source[key])) {
+                    if (!target[key]) Object.assign(target, { [key]: {} });
+                    Purlfy.#mergeDeep(target[key], source[key]);
+                } else {
+                    Object.assign(target, { [key]: source[key] });
+                }
+            }
+        }
+        return Purlfy.#mergeDeep(target, ...sources);
+    }
+
+    /**
      * Applies the given acts to the given input.
      * @param {string} input The input to apply the acts to.
      * @param {string[]} acts The acts to apply.
@@ -183,7 +216,7 @@ class Purlfy extends EventTarget {
      * @returns {void}
      */
     importRules(rules) {
-        Object.assign(this.#rules, rules);
+        Purlfy.#mergeDeep(this.#rules, rules);
     }
 
     /**
