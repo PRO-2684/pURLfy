@@ -4,6 +4,7 @@ const tests = require('./test-cases.json');
 const purifier = new Purlfy({
     fetchEnabled: true,
     lambdaEnabled: true,
+    log: () => {}, // Disable logging
 });
 purifier.importRules(rules);
 
