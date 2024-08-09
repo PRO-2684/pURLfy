@@ -25,5 +25,6 @@ for (const test of tests) {
 
 Promise.all(promises).then((results) => {
     const failed = results.filter((result) => !result);
-    console.log(`* Tests: ${results.length}, Failed: ${failed.length}`);
+    const icon = failed.length === 0 ? '🎉' : '😢';
+    console.log(`* Tests: ${results.length}, Failed: ${failed.length} ${icon}`);
 });
