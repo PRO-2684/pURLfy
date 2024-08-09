@@ -193,6 +193,7 @@ class Purlfy extends EventTarget {
      */
     #validRule(rule) {
         if (!rule || !rule.mode || !rule.description || !rule.author) return false;
+        if ((rule.acts ?? []).includes("dom") && typeof DOMParser === "undefined") return false; // Feature detection for DOMParser
         switch (rule.mode) {
             case "white":
             case "black":
