@@ -136,7 +136,7 @@ class Purlfy extends EventTarget {
      * @returns {Object} The merged object.
      * @see https://stackoverflow.com/questions/27936772
      */
-    static #mergeDeep(target, ...sources) {
+    static #mergeDeep(target, ...sources) { // TODO: handle rules conflict (e.g. "path" and "path/")
         if (!sources.length) return target;
         const source = sources.shift();
         if (Purlfy.#isObject(target) && Purlfy.#isObject(source)) {
@@ -212,11 +212,11 @@ class Purlfy extends EventTarget {
 
     /**
      * Imports the given rules.
-     * @param {Object} rules The rules to import.
+     * @param {...Object} rulesets The rulesets to import.
      * @returns {void}
      */
-    importRules(rules) {
-        Purlfy.#mergeDeep(this.#rules, rules);
+    importRules(...rulesets) {
+        Purlfy.#mergeDeep(this.#rules, ...rulesets);
     }
 
     /**

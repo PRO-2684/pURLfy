@@ -32,11 +32,10 @@ const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<country>.json")).json(); // 规则
-// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<country>.json
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<ruleset>.json")).json(); // 规则
+// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<ruleset>.json
 const additionalRules = {}; // 你也可以添加自己的规则
-purifier.importRules(additionalRules);
-purifier.importRules(rules); // 导入规则
+purifier.importRules(rules, additionalRules); // 导入规则
 purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
     console.log("Statistics increment:", e.detail); // 只有在支持 `CustomEvent` 的环境下才能使用
     console.log("Current statistics:", purifier.getStatistics());
@@ -76,7 +75,7 @@ new Purlfy({
 
 #### 实例方法
 
-- `importRules(rules: object): void`: 导入规则
+- `importRules(...rulesets: object[]): void`: 导入一系列规则集
 - `purify(url: string): Promise<object>`: 净化一个 URL
     - `url`: 要净化的 URL
     - 返回值: `Promise`，解析为一个对象，包含:

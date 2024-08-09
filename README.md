@@ -34,9 +34,8 @@ const purifier = new Purlfy({ // Instantiate a Purlfy object
 });
 const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.3.x/<ruleset>.json")).json(); // Rules
 // You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.3.x/<ruleset>.json
-purifier.importRules(rules); // Import rules
 const additionalRules = {}; // You can also add your own rules
-purifier.importRules(additionalRules);
+purifier.importRules(rules, additionalRules); // Import rules
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
     console.log("Statistics increment:", e.detail); // Only available in platforms that support `CustomEvent`
     console.log("Current statistics:", purifier.getStatistics());
@@ -76,7 +75,7 @@ new Purlfy({
 
 #### Instance Methods
 
-- `importRules(rules: object): void`: Import rules.
+- `importRules(...rulesets: object[]): void`: Import a series of rulesets.
 - `purify(url: string): Promise<object>`: Purify a URL.
     - `url`: The URL to be purified.
     - Returns a `Promise` that resolves to an object containing:
