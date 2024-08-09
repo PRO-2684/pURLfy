@@ -5,7 +5,7 @@ class Purlfy extends EventTarget {
      * @returns {string} The version of the library.
      */
     static get version() {
-        return "0.3.6";
+        return "0.3.7";
     };
     /**
      * The constructor of the AsyncFunction class.
