@@ -24,7 +24,7 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 
 ### 🚀 Quick Start
 
-Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out with our Telegram bot [@purlfy_bot](https://t.me/purlfy_bot)!
+Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out with our [Tampermonkey script](https://greasyfork.org/scripts/492480)!
 
 ```js
 // Somewhat import `Purlfy` class from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js
@@ -353,7 +353,7 @@ Some processors support parameters, simply append them to the function name sepa
 > If you are using pURLfy in your project, feel free to submit a PR to add your project here!
 
 - Our [Demo Page](https://pro-2684.github.io/?page=purlfy)
-- Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot) ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
+- ~~Our Telegram Bot [@purlfy_bot](https://t.me/purlfy_bot)~~ ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
 - [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 

@@ -24,7 +24,7 @@
 
 ### 🚀 快速开始
 
-访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，或者通过我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot) 来体验！
+访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，或者通过我们的 [Tampermonkey 脚本](https://greasyfork.org/scripts/492480) 来体验！
 
 ```js
 // 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js 导入 `Purlfy` 类
@@ -354,7 +354,7 @@ new Purlfy({
 > 若您的项目使用了 pURLfy，欢迎提交 PR 将您的项目添加到这里！
 
 - 我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)
-- 我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot) ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
+- ~~我们的 Telegram 机器人 [@purlfy_bot](https://t.me/purlfy_bot)~~ ([Source code](https://github.com/PRO-2684/Telegram-pURLfy))
 - [pURLfy for Tampermonkey](https://greasyfork.org/scripts/492480)
 - [LiteLoaderQQNT-pURLfy](https://github.com/PRO-2684/LiteLoaderQQNT-pURLfy)
 
