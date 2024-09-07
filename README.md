@@ -24,7 +24,7 @@ Purify URL: Remove redundant tracking parameters, skip redirecting pages, and ex
 
 ### 🚀 Quick Start
 
-Visit our [demo page](https://pro-2684.github.io/?page=purlfy), or try it out with our [Tampermonkey script](https://greasyfork.org/scripts/492480)!
+Visit our [demo page](https://pro-2684.github.io/?page=purlfy), try out our [Tampermonkey script](https://greasyfork.org/scripts/492480), or simply `node cli.js <url[]> [<options>]` to purify a list of URLs (For more information, please refer to the comments in the script).
 
 ```js
 // Somewhat import `Purlfy` class from https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js
@@ -336,7 +336,7 @@ If URL `https://example.com/?key=123` matches this rule, the `key` parameter wil
 
 ### 🖇️ Processors
 
-Some processors support parameters, simply append them to the function name separated by a colon (`:`): `func:arg1:arg2...:argn`. The following processors are currently supported:
+Some processors support parameters, simply append them to the function name separated by a colon (`:`): `func:arg`. The following processors are currently supported:
 
 - `url`: `string->string`, URL decoding (`decodeURIComponent`)
 - `base64`: `string->string`, Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)

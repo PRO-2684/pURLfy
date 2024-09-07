@@ -31,7 +31,10 @@ class Purlfy extends EventTarget {
     static #acts = {
         "url": decodeURIComponent,
         "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
-        "slice": (s, start, end) => s.slice(parseInt(start), end ? parseInt(end) : undefined),
+        "slice": (s, startEnd) => {
+            const [start, end] = startEnd.split(":");
+            return s.slice(parseInt(start), end ? parseInt(end) : undefined)
+        },
         "regex": (s, regex) => {
             const r = new RegExp(regex);
             const m = s.match(r);
@@ -162,8 +165,8 @@ class Purlfy extends EventTarget {
     static #applyActs(input, acts, logFunc) {
         let dest = input;
         for (const cmd of (acts)) {
-            const args = cmd.split(":");
-            const name = args[0];
+            const name = cmd.split(":")[0];
+            const arg = cmd.slice(name.length + 1);
             const act = Purlfy.#acts[name];
             if (!act) {
                 logFunc("Invalid act:", cmd);
@@ -171,7 +174,7 @@ class Purlfy extends EventTarget {
                 break;
             }
             try {
-                dest = act(dest, ...args.slice(1));
+                dest = act(dest, arg);
             } catch (e) {
                 logFunc(`Error processing input with act "${name}":`, e);
                 dest = null;
@@ -459,7 +462,7 @@ class Purlfy extends EventTarget {
                     logFunc("Visit mode, but got redirected to:", r.url);
                     urlObj = new URL(r.headers.get("location"), urlObj.href);
                 } else {
-                    const dest = Purlfy.#applyActs(html, rule.acts?.length ? rule.acts : ["regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)"], logFunc);
+                    const dest = Purlfy.#applyActs(html, rule.acts?.length ? rule.acts : [String.raw`regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`], logFunc);
                     if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
                         urlObj = new URL(dest, urlObj.href);
                     } else { // Invalid URL

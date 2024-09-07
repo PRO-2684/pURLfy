@@ -24,7 +24,7 @@
 
 ### 🚀 快速开始
 
-访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，或者通过我们的 [Tampermonkey 脚本](https://greasyfork.org/scripts/492480) 来体验！
+访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，体验我们的 [Tampermonkey 脚本](https://greasyfork.org/scripts/492480)，或者直接 `node cli.js <url[]> [<options>]` 来净化一系列 URL (更多信息请参考脚本注释)。
 
 ```js
 // 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/purlfy.min.js 导入 `Purlfy` 类
@@ -100,7 +100,6 @@ new Purlfy({
 #### 静态属性
 
 - `Purlfy.version: string`: pURLfy 的版本号
-
 
 ## 📖 规则
 
@@ -337,7 +336,7 @@ new Purlfy({
 
 ### 🖇️ 处理器
 
-部分处理器支持传入参数，只需用 `:` 分隔即可：`func:arg1:arg2...:argn`。目前支持的处理器如下:
+部分处理器支持传入参数，只需用 `:` 分隔即可：`func:arg`。目前支持的处理器如下:
 
 - `url`: `string->string`，URL 解码 (`decodeURIComponent`)
 - `base64`: `string->string`，Base64 解码 (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
