@@ -70,7 +70,7 @@ class Purlfy extends EventTarget {
      * The fetch function.
      * @type {Function}
      */
-    #fetch = fetch;
+    #fetch = fetch.bind(globalThis);
     /**
      * The statistics object.
      * @type {Object}
@@ -457,10 +457,12 @@ class Purlfy extends EventTarget {
                     logFunc("Error visiting URL:", e);
                     break;
                 }
-                const redirected = r.status >= 300 && r.status < 400 && r.headers.has("location");
-                if (redirected) {
+                if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
                     logFunc("Visit mode, but got redirected to:", r.url);
                     urlObj = new URL(r.headers.get("location"), urlObj.href);
+                } else if (r.url !== urlObj.href) { // In case `redirect: manual` doesn't work
+                    logFunc("Visit mode, but got redirected to:", r.url);
+                    urlObj = new URL(r.url, urlObj.href);
                 } else {
                     const dest = Purlfy.#applyActs(html, rule.acts?.length ? rule.acts : [String.raw`regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`], logFunc);
                     if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
