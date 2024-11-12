@@ -339,7 +339,7 @@ If URL `https://example.com/?key=123` matches this rule, the `key` parameter wil
 Some processors support parameters, simply append them to the function name separated by a colon (`:`): `func:arg`. The following processors are currently supported:
 
 - `url`: `string->string`, URL decoding (`decodeURIComponent`)
-- `base64`: `string->string`, Base64 decoding (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
+- `base64`: `string->string`, Base64 decoding of UTF-8 strings (Adapted from [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings))
 - `slice:start:end`: `string->string`, String slicing (`s.slice(start, end)`), `start` and `end` will be converted to integers
 - `regex:<regex>`: `string->string`, regex matching, returns the first match of the regex or an empty string if no match is found
 - `dom`: `string->Document`, parse the string as a HTML `Document` object (you'll need to define `DOMParser` globally if using in Node.js)

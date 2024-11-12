@@ -339,7 +339,7 @@ new Purlfy({
 部分处理器支持传入参数，只需用 `:` 分隔即可：`func:arg`。目前支持的处理器如下:
 
 - `url`: `string->string`，URL 解码 (`decodeURIComponent`)
-- `base64`: `string->string`，Base64 解码 (`decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+'))))`)
+- `base64`: `string->string`，Base64 解码 (从 [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings) 改编)
 - `slice:start:end`: `string->string`，截取字符串 (`s.slice(start, end)`)，`start` 和 `end` 会被转换为整数
 - `regex:<regex>`: `string->string`，正则表达式处理器，返回正则表达式 `<regex>` 的第一个匹配或空字符串
 - `dom`: `string->Document`，将字符串解析为 HTML `Document` 对象 (若在 Node.js 中使用，需要自行在全局定义 `DOMParser`)
