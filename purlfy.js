@@ -168,7 +168,7 @@ class Purlfy extends EventTarget {
      * @param {string} input The input to apply the acts to.
      * @param {string[]} acts The acts to apply.
      * @param {Function} logFunc The logger function.
-     * @returns {string} The result of applying the given acts to the given input.
+     * @returns {string | null} The result of applying the given acts to the given input.
      */
     static #applyActs(input, acts, logFunc) {
         let dest = input;
@@ -189,7 +189,11 @@ class Purlfy extends EventTarget {
                 break;
             }
         }
-        return dest;
+        if (typeof dest === "string" || dest instanceof URL) {
+            return dest.toString();
+        } else {
+            return null;
+        }
     }
 
     // Instance methods
