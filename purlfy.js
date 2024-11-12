@@ -8,6 +8,11 @@ class Purlfy extends EventTarget {
         return "0.3.10";
     };
     /**
+     * A TextDecoder object used internally.
+     * @type {TextDecoder}
+     */
+    static #decoder = new TextDecoder();
+    /**
      * The constructor of the AsyncFunction class.
      * @type {Function}
      */
@@ -29,21 +34,24 @@ class Purlfy extends EventTarget {
      * @type {Object}
      */
     static #acts = {
-        "url": decodeURIComponent,
-        "base64": s => decodeURIComponent(escape(atob(s.replaceAll('_', '/').replaceAll('-', '+')))),
-        "slice": (s, startEnd) => {
+        url: decodeURIComponent,
+        base64: s => { // https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings
+            const bytes = Uint8Array.from(atob(s), (m) => m.codePointAt(0));
+            return Purlfy.#decoder.decode(bytes);
+        },
+        slice: (s, startEnd) => {
             const [start, end] = startEnd.split(":");
             return s.slice(parseInt(start), end ? parseInt(end) : undefined)
         },
-        "regex": (s, regex) => {
+        regex: (s, regex) => {
             const r = new RegExp(regex);
             const m = s.match(r);
             return m ? m[0] : "";
         },
-        "dom": (s) => new DOMParser().parseFromString(s, "text/html"),
-        "sel": (s, selector) => s.querySelector(selector),
-        "attr": (e, attr) => e.getAttribute(attr),
-        "text": (e) => e.textContent,
+        dom: (s) => new DOMParser().parseFromString(s, "text/html"),
+        sel: (s, selector) => s.querySelector(selector),
+        attr: (e, attr) => e.getAttribute(attr),
+        text: (e) => e.textContent,
     };
     // Instance properties
     /**
