@@ -13,6 +13,11 @@ class Purlfy extends EventTarget {
      */
     static #decoder = new TextDecoder();
     /**
+     * A DOMParser object used internally.
+     * @type {DOMParser | null}
+     */
+    static #domParser = typeof DOMParser !== "undefined" ? new DOMParser() : null;
+    /**
      * The constructor of the AsyncFunction class.
      * @type {Function}
      */
@@ -48,7 +53,7 @@ class Purlfy extends EventTarget {
             const m = s.match(r);
             return m ? m[0] : "";
         },
-        dom: (s) => new DOMParser().parseFromString(s, "text/html"),
+        dom: (s) => Purlfy.#domParser.parseFromString(s, "text/html"),
         sel: (s, selector) => s.querySelector(selector),
         attr: (e, attr) => e.getAttribute(attr),
         text: (e) => e.textContent,
@@ -241,7 +246,7 @@ class Purlfy extends EventTarget {
      */
     #validRule(rule) {
         if (!rule || !rule.mode || !rule.description || !rule.author) return false;
-        if ((rule.acts ?? []).includes("dom") && typeof DOMParser === "undefined") return false; // Feature detection for DOMParser
+        if ((rule.acts ?? []).includes("dom") && !Purlfy.#domParser) return false; // Feature detection for DOMParser
         switch (rule.mode) {
             case "white":
             case "black":
