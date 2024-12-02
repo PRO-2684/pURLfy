@@ -101,9 +101,9 @@ You can change these properties after instantiation, and they will take effect f
 
 - `Purlfy.version: string`: The version of pURLfy.
 
-## 📖 Rules
+## 📖 Rulesets
 
-Community-contributed rules files are hosted on GitHub, and you can find them at [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules). The format of the rules files is as follows:
+Community-contributed rulesets are hosted on GitHub, and you can find them at [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules). The format of a ruleset file is as follows:
 
 ```jsonc
 {

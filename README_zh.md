@@ -101,9 +101,9 @@ new Purlfy({
 
 - `Purlfy.version: string`: pURLfy 的版本号
 
-## 📖 规则
+## 📖 规则集
 
-社区贡献的规则文件托管在 GitHub 上，您可以在 [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules) 中找到。规则文件的格式如下:
+社区贡献的规则集文件托管在 GitHub 上，您可以在 [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules) 中找到。规则集文件的格式如下:
 
 ```jsonc
 {
