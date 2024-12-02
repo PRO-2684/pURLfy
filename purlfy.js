@@ -41,6 +41,7 @@ class Purlfy extends EventTarget {
     static #acts = {
         url: decodeURIComponent,
         base64: s => { // https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings
+            s = s.replaceAll('_', '/').replaceAll('-', '+');
             const bytes = Uint8Array.from(atob(s), (m) => m.codePointAt(0));
             return Purlfy.#decoder.decode(bytes);
         },
