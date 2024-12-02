@@ -250,6 +250,7 @@ class Purlfy extends EventTarget {
         if ((rule.acts ?? []).includes("dom") && !Purlfy.#domParser) return false; // Feature detection for DOMParser
         switch (rule.mode) {
             case "white":
+                return Array.isArray(rule.params);
             case "black":
                 return Array.isArray(rule.params) && Purlfy.#udfOrType(rule.std, "boolean");
             case "param":

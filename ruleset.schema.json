@@ -19,12 +19,13 @@
     "definitions": {
         "rule": {
             "type": "object",
+            "title": "Rule",
+            "description": "A single rule.",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "mode": {
                     "type": "string",
+                    "title": "Mode",
+                    "description": "Mode of the rule.",
                     "enum": [
                         "white",
                         "black",
@@ -37,44 +38,70 @@
                         "continue"
                     ]
                 },
+                "description": {
+                    "type": "string",
+                    "title": "Description",
+                    "description": "Description of the rule."
+                },
+                "author": {
+                    "type": "string",
+                    "title": "Author",
+                    "description": "Author of the rule."
+                },
+                "std": {
+                    "type": "boolean",
+                    "title": "Standard",
+                    "description": "Whether the URL search string shall be deemed standard."
+                },
                 "params": {
                     "type": "array",
+                    "title": "Params",
+                    "description": "List of parameters to be kept, removed or processed.",
                     "items": {
                         "type": "string"
                     }
-                },
-                "author": {
-                    "type": "string"
                 },
                 "acts": {
                     "type": "array",
+                    "title": "Acts",
+                    "description": "List of actions to be performed.",
                     "items": {
                         "type": "string"
                     }
                 },
-                "lambda": {
-                    "type": "string"
-                },
                 "regex": {
                     "type": "array",
+                    "title": "Regex",
+                    "description": "List of regular expressions to be matched.",
                     "items": {
                         "type": "string"
                     }
                 },
                 "replace": {
                     "type": "array",
+                    "title": "Replace",
+                    "description": "List of strings to replace matched parts.",
                     "items": {
                         "type": "string"
                     }
                 },
                 "headers": {
                     "type": "object",
+                    "title": "Headers",
+                    "description": "The headers to use for web requests.",
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
+                "lambda": {
+                    "type": "string",
+                    "title": "Lambda",
+                    "description": "The lambda function to use for processing."
+                },
                 "continue": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "title": "Continue",
+                    "description": "Whether to continue processing the URL."
                 }
             },
             "required": [
