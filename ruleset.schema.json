@@ -4,13 +4,13 @@
     "type": "object",
     "patternProperties": {
         "^[^/]+/$": {
-            "$ref": "#/definitions/recurse"
+            "$ref": "#/definitions/intermediate"
         },
         "^[^/]+$": {
             "$ref": "#/definitions/rule"
         },
         "^/.+/$": {
-            "$ref": "#/definitions/recurse"
+            "$ref": "#/definitions/intermediate"
         },
         "^/.+[^/]$": {
             "$ref": "#/definitions/rule"
@@ -111,17 +111,19 @@
             ],
             "additionalProperties": false
         },
-        "recurse": {
+        "intermediate": {
             "type": "object",
+            "title": "Intermediate",
+            "description": "An intermediate object. Expects another intermediate if ends with a slash, otherwise a rule.",
             "patternProperties": {
                 "^[^/]+/$": {
-                    "$ref": "#/definitions/recurse"
+                    "$ref": "#/definitions/intermediate"
                 },
-                "^[^/]+$": {
+                "^[^/]*$": {
                     "$ref": "#/definitions/rule"
                 },
                 "^/.+/$": {
-                    "$ref": "#/definitions/recurse"
+                    "$ref": "#/definitions/intermediate"
                 },
                 "^/.+[^/]$": {
                     "$ref": "#/definitions/rule"
