@@ -9,9 +9,9 @@ The ultimate URL purifier.
 > [!NOTE]
 > Do you know that the name "pURLfy" is a combination of "purify" and "URL"? It can be pronounced as `pjuɑrelfaɪ`.
 
-## 🪄 Functionalities
+## 🪄 Features
 
-Purify URL: Remove redundant tracking parameters, skip redirecting pages, and extract the link that really matters.
+Usually, pURLfy is used for purifying URL, including removing redundant tracking parameters, skipping redirecting pages, and extracting the link that really matters. However, pURLfy is not limited to this. It is actually a powerful rule-based tool for transforming URLs, and example use cases include replacing the domain name and redirecting to an alternative of the given URL etc. It features:
 
 - ⚡ Fast: Purify URLs quickly and efficiently.
 - 🪶 Lightweight: Zero-dependency; Minified script less than 4kb.
