@@ -33,9 +33,7 @@
                         "regex",
                         "redirect",
                         "visit",
-                        "lambda",
-                        "headers",
-                        "continue"
+                        "lambda"
                     ]
                 },
                 "description": {
@@ -108,6 +106,103 @@
                 "mode",
                 "description",
                 "author"
+            ],
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "white"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "params"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "black"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "params"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "param"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "params"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "regex"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "regex",
+                            "replace"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "redirect"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": []
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "visit"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": []
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "mode": {
+                                "const": "lambda"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "lambda"
+                        ]
+                    }
+                }
             ],
             "additionalProperties": false
         },
