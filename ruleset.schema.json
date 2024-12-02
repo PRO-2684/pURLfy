@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Ruleset Schema",
+    "type": "object",
+    "patternProperties": {
+        "^[^/]+/$": {
+            "$ref": "#/definitions/recurse"
+        },
+        "^[^/]+$": {
+            "$ref": "#/definitions/rule"
+        },
+        "^/.+/$": {
+            "$ref": "#/definitions/recurse"
+        },
+        "^/.+[^/]$": {
+            "$ref": "#/definitions/rule"
+        }
+    },
+    "definitions": {
+        "rule": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "white",
+                        "black",
+                        "param",
+                        "regex",
+                        "redirect",
+                        "visit",
+                        "lambda",
+                        "headers",
+                        "continue"
+                    ]
+                },
+                "params": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "author": {
+                    "type": "string"
+                },
+                "acts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "lambda": {
+                    "type": "string"
+                },
+                "regex": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "replace": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "continue": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "mode",
+                "description",
+                "author"
+            ],
+            "additionalProperties": false
+        },
+        "recurse": {
+            "type": "object",
+            "patternProperties": {
+                "^[^/]+/$": {
+                    "$ref": "#/definitions/recurse"
+                },
+                "^[^/]+$": {
+                    "$ref": "#/definitions/rule"
+                },
+                "^/.+/$": {
+                    "$ref": "#/definitions/recurse"
+                },
+                "^/.+[^/]$": {
+                    "$ref": "#/definitions/rule"
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

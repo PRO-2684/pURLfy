@@ -1,0 +1,10 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "/scripts/test-rules.json"
+            ],
+            "url": "/ruleset.schema.json"
+        }
+    ]
+}

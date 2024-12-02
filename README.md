@@ -121,6 +121,8 @@ Community-contributed rulesets are hosted on GitHub, and you can find them at [p
 }
 ```
 
+Formal definition of the format can be found at [`ruleset.schema.json`](./ruleset.schema.json).
+
 ### ✅ Path Matching
 
 `<domain>`, `<path>`: The domain and a part of path, such as `example.com/`, `/^.+\.example\.com$`, `path/` and `page`. Here's an explanation of them:

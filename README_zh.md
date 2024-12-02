@@ -121,6 +121,8 @@ new Purlfy({
 }
 ```
 
+此格式的形式化定义可以参考 [`ruleset.schema.json`](./ruleset.schema.json)。
+
 ### ✅ 路径匹配
 
 `<domain>`, `<path>`: 域名和一部分路径，例如 `example.com/`, `/^.+\.example\.com$`, `path/` 和 `page`。以下是对它们的解释:
