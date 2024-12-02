@@ -2,20 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Ruleset Schema",
     "type": "object",
-    "patternProperties": {
-        "^[^/]+/$": {
-            "$ref": "#/definitions/intermediate"
-        },
-        "^[^/]+$": {
-            "$ref": "#/definitions/rule"
-        },
-        "^/.+/$": {
-            "$ref": "#/definitions/intermediate"
-        },
-        "^/.+[^/]$": {
-            "$ref": "#/definitions/rule"
-        }
-    },
+    "$ref": "#/definitions/intermediate",
     "definitions": {
         "rule": {
             "type": "object",
