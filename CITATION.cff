@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: 'pURLfy'
+message: >-
+  If you use this software and wish to cite it,
+  you can use the metadata from this file.
+type: software
+authors:
+  - name: "PRO-2684"
+identifiers:
+  - type: url
+    value: 'https://github.com/PRO-2684/pURLfy'
+    description: Repository
+repository-code: 'https://github.com/PRO-2684/pURLfy'
+url: 'https://github.com/PRO-2684/pURLfy'
+abstract: >-
+  Primarily, pURLfy is used for purifying URL, including
+  removing redundant tracking parameters, skipping
+  redirecting pages, and extracting the link that really
+  matters. However, pURLfy is not limited to this. It is
+  actually a powerful rule-based tool for transforming
+  URLs, and example use cases include replacing the
+  domain name and redirecting to an alternative of the
+  given URL etc.
+keywords:
+  - purifier
+  - url-cleaning
+  - pURLfy
+license: gpl-3.0
