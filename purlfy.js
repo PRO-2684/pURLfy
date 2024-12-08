@@ -5,7 +5,7 @@ class Purlfy extends EventTarget {
      * @returns {string} The version of the library.
      */
     static get version() {
-        return "0.3.10";
+        return "0.3.11";
     };
     /**
      * A TextDecoder object used internally.

@@ -1,6 +1,6 @@
 {
   "name": "purlfy",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "The ultimate URL purifier.",
   "main": "purlfy.js",
   "scripts": {
