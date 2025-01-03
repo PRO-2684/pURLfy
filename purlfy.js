@@ -348,6 +348,7 @@ class Purlfy extends EventTarget {
      * @returns {Promise<[URL, boolean, Object]>} The new URL object, whether to continue and the mode-specific incremental statistics.
      */
     async #applyRule(urlObj, rule, logFunc) {
+        const originalUrl = urlObj.href;
         const mode = rule.mode;
         const increment = { ...Purlfy.#zeroStatistics }; // Incremental statistics
         const lengthBefore = urlObj.href.length;
@@ -518,6 +519,9 @@ class Purlfy extends EventTarget {
         const paramsCntAfter = urlObj.searchParams.size;
         increment.param += (["white", "black"].includes(mode)) ? (paramsCntBefore - paramsCntAfter) : 0;
         increment.char += Math.max(lengthBefore - urlObj.href.length, 0); // Prevent negative char count
+        if (urlObj.href === originalUrl) {
+            shallContinue = false; // Overwrite shallContinue if URL has not been changed
+        }
         return [urlObj, shallContinue, increment];
     }
 
