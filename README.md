@@ -121,7 +121,7 @@ Community-contributed rulesets are hosted on GitHub, and you can find them at [p
 }
 ```
 
-Formal definition of the format can be found at [`ruleset.schema.json`](./ruleset.schema.json).
+Formal definition of the format can be found at [`ruleset.schema.json`](https://github.com/PRO-2684/pURLfy-rules/blob/core-0.3.x/ruleset.schema.json) in [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules/) repository.
 
 ### ✅ Path Matching
 

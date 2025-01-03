@@ -121,7 +121,7 @@ new Purlfy({
 }
 ```
 
-此格式的形式化定义可以参考 [`ruleset.schema.json`](./ruleset.schema.json)。
+此格式的形式化定义可以参考 [pURLfy-rules](https://github.com/PRO-2684/pURLfy-rules/) 仓库中的 [`ruleset.schema.json`](https://github.com/PRO-2684/pURLfy-rules/blob/core-0.3.x/ruleset.schema.json) 文件。
 
 ### ✅ 路径匹配
 
