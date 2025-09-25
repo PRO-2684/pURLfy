@@ -1,5 +1,5 @@
 {
-    "name": "worker-name",
+    "name": "purlfy",
     "compatibility_date": "2025-09-25",
     "main": "src/worker.js",
     "assets": {
