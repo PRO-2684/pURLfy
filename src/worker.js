@@ -45,7 +45,7 @@ export default {
             case "/": // Redirect to index.html
                 return Response.redirect(url.origin + "/index.html", 302);
             default:
-                return env.ASSETS.fetch(request);
+                return new Response("Not Found", { status: 404 });
         }
     }
 }

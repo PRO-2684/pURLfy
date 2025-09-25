@@ -21,4 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = input.value;
         purlfy(url);
     });
+
+    // Handle example button clicks
+    document.querySelectorAll(".example-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const url = button.getAttribute("data-url");
+            input.value = url;
+            input.dispatchEvent(new Event("change"));
+        });
+    });
 });

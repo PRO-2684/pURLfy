@@ -6,6 +6,8 @@
     --border: #E0E0E0;
     --readonly-background: #F5F5F7;
     --focus-color: #0066CC;
+    --button-background: #F0F0F0;
+    --button-hover: #E0E0E0;
 }
 
 /* Dark mode */
@@ -17,6 +19,8 @@
         --border: #3A3A3A;
         --readonly-background: #1E1E1E;
         --focus-color: #4A9EFF;
+        --button-background: #2A2A2A;
+        --button-hover: #3A3A3A;
     }
 
     html {
@@ -28,12 +32,32 @@ body {
     background-color: var(--background);
     color: var(--text);
     max-width: 800px;
-    margin: 0 auto;
+    margin: 1em auto;
 }
 
 header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    text-align: center;
+}
+
+.description p {
+    margin: 0.5rem 0;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+.description a {
+    color: var(--focus-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.description a:hover {
+    text-decoration: underline;
 }
 
 label {
@@ -70,6 +94,54 @@ input[type="text"]::placeholder {
 input[readonly] {
     background-color: var(--readonly-background);
     cursor: default;
+}
+
+section {
+    margin: 1rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+h3 {
+    margin-top: 0;
+}
+
+.example-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.example-btn {
+    padding: 8px 16px;
+    background-color: var(--button-background);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.example-btn:hover {
+    background-color: var(--button-hover);
+    border-color: var(--focus-color);
+}
+
+.example-btn:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 600px) {
+    .example-buttons {
+        flex-direction: column;
+    }
+
+    .example-btn {
+        width: 100%;
+        text-align: left;
+    }
 }
 
 .github-corner {
