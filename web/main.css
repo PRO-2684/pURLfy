@@ -1,0 +1,92 @@
+/* Light mode */
+:root {
+    --background: #FFFFFF;
+    --text: #15141A;
+    --text-dim: #5B5B66;
+    --border: #E0E0E0;
+    --readonly-background: #F5F5F7;
+    --focus-color: #0066CC;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #15141A;
+        --text: #FBFBFE;
+        --text-dim: #CFCFD8;
+        --border: #3A3A3A;
+        --readonly-background: #1E1E1E;
+        --focus-color: #4A9EFF;
+    }
+
+    html {
+        color-scheme: dark;
+    }
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--background);
+    color: var(--text);
+    font-size: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--focus-color);
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+}
+
+input[type="text"]::placeholder {
+    color: var(--text-dim);
+}
+
+input[readonly] {
+    background-color: var(--readonly-background);
+    cursor: default;
+}
+
+.github-corner {
+    opacity: 0.4;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover, &:focus {
+        opacity: 1;
+    }
+    > svg {
+        position: absolute;
+        top: 0;
+        border: 0;
+        right: 0;
+        width: 4em;
+        height: 4em;
+        fill: var(--text);
+        color: var(--background);
+    }
+}

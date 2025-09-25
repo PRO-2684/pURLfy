@@ -1,5 +1,9 @@
 {
     "name": "worker-name",
     "compatibility_date": "2025-09-25",
-    "main": "src/worker.js"
+    "main": "src/worker.js",
+    "assets": {
+        "directory": "./web",
+        "binding": "ASSETS"
+    }
 }
