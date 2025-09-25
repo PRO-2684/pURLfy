@@ -19,7 +19,7 @@ const {
     positionals: urls,
 } = parseArgs({ args, options, allowPositionals: true });
 const { rules: rulesStr } = values;
-const enabledRules = rulesStr.trim().length ? rulesStr.split(",").map((rule) => rule.trim()).filter(Boolean) : require("./rules/list.json");
+const enabledRules = rulesStr.trim().length ? rulesStr.split(",").map((rule) => rule.trim()).filter(Boolean) : require("../rules/list.json");
 console.log("Enabled rules:", enabledRules);
 console.log("---");
 

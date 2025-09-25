@@ -6,7 +6,7 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 const package = require('../package.json');
-const purlfyPath = "./purlfy.js";
+const purlfyPath = "./src/purlfy.js";
 
 const version = package.version;
 const data = fs.readFileSync(purlfyPath, 'utf8');

@@ -1,1 +1,3 @@
 rules
+node_modules/
+.wrangler/

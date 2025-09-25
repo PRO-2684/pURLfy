@@ -30,5 +30,8 @@
   "bugs": {
     "url": "https://github.com/PRO-2684/pURLfy/issues"
   },
-  "homepage": "https://github.com/PRO-2684/pURLfy#readme"
+  "homepage": "https://github.com/PRO-2684/pURLfy#readme",
+  "devDependencies": {
+    "wrangler": "^4.39.0"
+  }
 }

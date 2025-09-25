@@ -1,4 +1,4 @@
-const Purlfy = require('../purlfy.js');
+const Purlfy = require('../src/purlfy.js');
 const rules = require('./test-rules.json');
 const tests = require('./test-cases.json');
 const purifier = new Purlfy({
