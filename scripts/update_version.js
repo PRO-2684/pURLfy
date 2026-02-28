@@ -17,8 +17,26 @@ const result = data.replace(/return "\d+\.\d+\.\d+";/, `return "${version}";`);
 fs.writeFileSync(purlfyPath, result, "utf8");
 console.log(`Updated version to ${version}`);
 
-console.log("Adding purlfy.js to git...");
-exec("git add purlfy.js", (err, stdout, stderr) => {
+console.log(`Adding ${purlfyPath} to git...`);
+exec(`git add ${purlfyPath}`, (err, stdout, stderr) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+});
+console.log("Committing changes...");
+exec(`git commit -m "Bump version to ${version}"`, (err, stdout, stderr) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+});
+console.log("Tagging version...");
+exec(`git tag v${version} -m "Version ${version}"`, (err, stdout, stderr) => {
     if (err) {
         console.error(err);
         return;
