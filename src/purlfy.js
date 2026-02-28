@@ -6,7 +6,7 @@ class Purlfy extends EventTarget {
      */
     static get version() {
         return "0.3.11";
-    };
+    }
     /**
      * A TextDecoder object used internally.
      * @type {TextDecoder}
@@ -16,12 +16,13 @@ class Purlfy extends EventTarget {
      * A DOMParser object used internally.
      * @type {DOMParser | null}
      */
-    static #domParser = typeof DOMParser !== "undefined" ? new DOMParser() : null;
+    static #domParser =
+        typeof DOMParser !== "undefined" ? new DOMParser() : null;
     /**
      * The constructor of the AsyncFunction class.
      * @type {Function}
      */
-    static #AsyncFunction = async function () { }.constructor;
+    static #AsyncFunction = async function () {}.constructor;
     /**
      * The initial statistics object. (All values are 0)
      * @type {Object}
@@ -32,7 +33,7 @@ class Purlfy extends EventTarget {
         decoded: 0,
         redirected: 0,
         visited: 0,
-        char: 0
+        char: 0,
     };
     /**
      * The default acts for URL purification.
@@ -40,14 +41,15 @@ class Purlfy extends EventTarget {
      */
     static #acts = {
         url: decodeURIComponent,
-        base64: s => { // https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings
-            s = s.replaceAll('_', '/').replaceAll('-', '+');
+        base64: (s) => {
+            // https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#unicode_strings
+            s = s.replaceAll("_", "/").replaceAll("-", "+");
             const bytes = Uint8Array.from(atob(s), (m) => m.codePointAt(0));
             return Purlfy.#decoder.decode(bytes);
         },
         slice: (s, startEnd) => {
             const [start, end] = startEnd.split(":");
-            return s.slice(parseInt(start), end ? parseInt(end) : undefined)
+            return s.slice(parseInt(start), end ? parseInt(end) : undefined);
         },
         regex: (s, regex) => {
             const r = new RegExp(regex);
@@ -143,7 +145,7 @@ class Purlfy extends EventTarget {
      * @see https://stackoverflow.com/questions/27936772
      */
     static #isObject(item) {
-        return (item && typeof item === 'object' && !Array.isArray(item));
+        return item && typeof item === "object" && !Array.isArray(item);
     }
 
     /**
@@ -153,7 +155,8 @@ class Purlfy extends EventTarget {
      * @returns {Object} The merged object.
      * @see https://stackoverflow.com/questions/27936772
      */
-    static #mergeDeep(target, ...sources) { // TODO: handle rules conflict (e.g. "path" and "path/")
+    static #mergeDeep(target, ...sources) {
+        // TODO: handle rules conflict (e.g. "path" and "path/")
         if (!sources.length) return target;
         const source = sources.shift();
         if (Purlfy.#isObject(target) && Purlfy.#isObject(source)) {
@@ -178,7 +181,7 @@ class Purlfy extends EventTarget {
      */
     static #applyActs(input, acts, logFunc) {
         let dest = input;
-        for (const cmd of (acts)) {
+        for (const cmd of acts) {
             const name = cmd.split(":")[0];
             const arg = cmd.slice(name.length + 1);
             const act = Purlfy.#acts[name];
@@ -246,23 +249,53 @@ class Purlfy extends EventTarget {
      * @returns {boolean} Whether the given rule is valid.
      */
     #validRule(rule) {
-        if (!rule || !rule.mode || !rule.description || !rule.author) return false;
-        if ((rule.acts ?? []).includes("dom") && !Purlfy.#domParser) return false; // Feature detection for DOMParser
+        if (!rule || !rule.mode || !rule.description || !rule.author)
+            return false;
+        if ((rule.acts ?? []).includes("dom") && !Purlfy.#domParser)
+            return false; // Feature detection for DOMParser
         switch (rule.mode) {
             case "white":
                 return Array.isArray(rule.params);
             case "black":
-                return Array.isArray(rule.params) && Purlfy.#udfOrType(rule.std, "boolean");
+                return (
+                    Array.isArray(rule.params) &&
+                    Purlfy.#udfOrType(rule.std, "boolean")
+                );
             case "param":
-                return Array.isArray(rule.params) && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
+                return (
+                    Array.isArray(rule.params) &&
+                    (rule.acts === undefined || Array.isArray(rule.acts)) &&
+                    Purlfy.#udfOrType(rule.continue, "boolean")
+                );
             case "regex":
-                return Array.isArray(rule.regex) && Array.isArray(rule.replace) && Purlfy.#udfOrType(rule.continue, "boolean") && rule.regex.length === rule.replace.length;
+                return (
+                    Array.isArray(rule.regex) &&
+                    Array.isArray(rule.replace) &&
+                    Purlfy.#udfOrType(rule.continue, "boolean") &&
+                    rule.regex.length === rule.replace.length
+                );
             case "redirect":
-                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.headers, "object") && Purlfy.#udfOrType(rule.continue, "boolean");
+                return (
+                    this.fetchEnabled &&
+                    Purlfy.#udfOrType(rule.ua, "string") &&
+                    Purlfy.#udfOrType(rule.headers, "object") &&
+                    Purlfy.#udfOrType(rule.continue, "boolean")
+                );
             case "visit":
-                return this.fetchEnabled && Purlfy.#udfOrType(rule.ua, "string") && Purlfy.#udfOrType(rule.headers, "object") && (rule.acts === undefined || Array.isArray(rule.acts)) && Purlfy.#udfOrType(rule.continue, "boolean");
+                return (
+                    this.fetchEnabled &&
+                    Purlfy.#udfOrType(rule.ua, "string") &&
+                    Purlfy.#udfOrType(rule.headers, "object") &&
+                    (rule.acts === undefined || Array.isArray(rule.acts)) &&
+                    Purlfy.#udfOrType(rule.continue, "boolean")
+                );
             case "lambda":
-                return this.lambdaEnabled && (typeof rule.lambda === "string" || rule.lambda instanceof Purlfy.#AsyncFunction) && Purlfy.#udfOrType(rule.continue, "boolean");
+                return (
+                    this.lambdaEnabled &&
+                    (typeof rule.lambda === "string" ||
+                        rule.lambda instanceof Purlfy.#AsyncFunction) &&
+                    Purlfy.#udfOrType(rule.continue, "boolean")
+                );
             default:
                 return false;
         }
@@ -287,7 +320,8 @@ class Purlfy extends EventTarget {
                 if (this.#validRule(rule)) {
                     return rule; // Exact match found
                 }
-            } else { // No exact match found, try to match with regex
+            } else {
+                // No exact match found, try to match with regex
                 let found = false;
                 // Iterate through current rules to match RegExp
                 for (const [key, val] of Object.entries(currentRules)) {
@@ -297,7 +331,8 @@ class Purlfy extends EventTarget {
                         const regexStr = sub ? key.slice(1, -1) : key.slice(1);
                         if (regexStr === "") continue; // Skip empty regex
                         const regex = new RegExp(regexStr);
-                        if (regex.test(part)) { // Regex matches
+                        if (regex.test(part)) {
+                            // Regex matches
                             if (!sub && this.#validRule(val)) {
                                 return val; // Regex match found
                             } else if (sub) {
@@ -313,7 +348,8 @@ class Purlfy extends EventTarget {
                 if (!found) break; // No matching rule found
             }
         }
-        if (currentRules.hasOwnProperty("")) { // Fallback rule
+        if (currentRules.hasOwnProperty("")) {
+            // Fallback rule
             fallbackRule = currentRules[""];
         }
         if (this.#validRule(fallbackRule)) {
@@ -332,9 +368,11 @@ class Purlfy extends EventTarget {
             this.#statistics[key] += value;
         }
         if (typeof CustomEvent === "function") {
-            this.dispatchEvent(new CustomEvent("statisticschange", {
-                detail: increment
-            }));
+            this.dispatchEvent(
+                new CustomEvent("statisticschange", {
+                    detail: increment,
+                }),
+            );
         } else {
             this.dispatchEvent(new Event("statisticschange"));
         }
@@ -354,8 +392,11 @@ class Purlfy extends EventTarget {
         const lengthBefore = urlObj.href.length;
         const paramsCntBefore = urlObj.searchParams.size;
         let shallContinue = false;
-        switch (mode) { // Purifies `urlObj` based on the rule
-            case "white": { // Whitelist mode
+        switch (
+            mode // Purifies `urlObj` based on the rule
+        ) {
+            case "white": {
+                // Whitelist mode
                 const newParams = new URLSearchParams();
                 for (const param of rule.params) {
                     if (urlObj.searchParams.has(param)) {
@@ -365,7 +406,8 @@ class Purlfy extends EventTarget {
                 urlObj.search = newParams.toString();
                 break;
             }
-            case "black": { // Blacklist mode
+            case "black": {
+                // Blacklist mode
                 if (!rule.std && !Purlfy.#isStandard(urlObj)) {
                     logFunc("Non-standard URL search string:", urlObj.search);
                     break;
@@ -376,10 +418,12 @@ class Purlfy extends EventTarget {
                 urlObj.search = urlObj.searchParams.toString();
                 break;
             }
-            case "param": { // Specific param mode
+            case "param": {
+                // Specific param mode
                 // Process given parameter to be used as a new URL
                 let paramValue = null;
-                for (const param of rule.params) { // Find the first available parameter value
+                for (const param of rule.params) {
+                    // Find the first available parameter value
                     if (urlObj.searchParams.has(param)) {
                         paramValue = urlObj.searchParams.get(param);
                         break;
@@ -389,10 +433,16 @@ class Purlfy extends EventTarget {
                     logFunc("Parameter(s) not found:", rule.params.join(", "));
                     break;
                 }
-                const dest = Purlfy.#applyActs(paramValue, rule.acts ?? ["url"], logFunc);
-                if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
+                const dest = Purlfy.#applyActs(
+                    paramValue,
+                    rule.acts ?? ["url"],
+                    logFunc,
+                );
+                if (dest && URL.canParse(dest, urlObj.href)) {
+                    // Valid URL
                     urlObj = new URL(dest, urlObj.href);
-                } else { // Invalid URL
+                } else {
+                    // Invalid URL
                     logFunc("Invalid URL:", dest);
                     break;
                 }
@@ -400,7 +450,8 @@ class Purlfy extends EventTarget {
                 increment.decoded++;
                 break;
             }
-            case "regex": { // Regex mode
+            case "regex": {
+                // Regex mode
                 let newUrl = urlObj.href;
                 for (let i = 0; i < rule.regex.length; i++) {
                     const regex = new RegExp(rule.regex[i], "g");
@@ -408,16 +459,19 @@ class Purlfy extends EventTarget {
                     newUrl = newUrl.replaceAll(regex, replace);
                 }
                 newUrl = Purlfy.#applyActs(newUrl, rule.acts ?? [], logFunc);
-                if (newUrl && URL.canParse(newUrl, urlObj.href)) { // Valid URL
+                if (newUrl && URL.canParse(newUrl, urlObj.href)) {
+                    // Valid URL
                     urlObj = new URL(newUrl, urlObj.href);
-                } else { // Invalid URL
+                } else {
+                    // Invalid URL
                     logFunc("Invalid URL:", newUrl);
                     break;
                 }
                 shallContinue = rule.continue ?? true;
                 break;
             }
-            case "redirect": { // Redirect mode
+            case "redirect": {
+                // Redirect mode
                 if (!this.fetchEnabled) {
                     logFunc("Redirect mode is disabled.");
                     break;
@@ -425,7 +479,7 @@ class Purlfy extends EventTarget {
                 const options = {
                     method: "HEAD",
                     redirect: "manual",
-                    headers: rule.headers ?? {}
+                    headers: rule.headers ?? {},
                 };
                 if (rule.ua) {
                     options.headers["User-Agent"] = rule.ua;
@@ -433,7 +487,11 @@ class Purlfy extends EventTarget {
                 let dest = null;
                 try {
                     const r = await this.#fetch(urlObj.href, options);
-                    if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
+                    if (
+                        r.status >= 300 &&
+                        r.status < 400 &&
+                        r.headers.has("location")
+                    ) {
                         dest = r.headers.get("location");
                     } else if (r.url !== urlObj.href) {
                         dest = r.url; // In case `redirect: manual` doesn't work
@@ -445,7 +503,8 @@ class Purlfy extends EventTarget {
                 if (dest && URL.canParse(dest, urlObj.href)) {
                     const prevUrl = urlObj.href;
                     urlObj = new URL(dest, urlObj.href);
-                    if (urlObj.href === prevUrl) { // No redirection
+                    if (urlObj.href === prevUrl) {
+                        // No redirection
                         logFunc("No redirection made.");
                         break;
                     }
@@ -456,7 +515,8 @@ class Purlfy extends EventTarget {
                 }
                 break;
             }
-            case "visit": { // Visit mode
+            case "visit": {
+                // Visit mode
                 if (!this.fetchEnabled) {
                     logFunc("Visit mode is disabled.");
                     break;
@@ -464,12 +524,13 @@ class Purlfy extends EventTarget {
                 const options = {
                     method: "GET",
                     redirect: "manual",
-                    headers: rule.headers ?? {}
+                    headers: rule.headers ?? {},
                 };
                 if (rule.ua) {
                     options.headers["User-Agent"] = rule.ua;
                 }
-                let r, html = null;
+                let r,
+                    html = null;
                 try {
                     r = await this.#fetch(urlObj.href, options);
                     html = await r.text();
@@ -477,17 +538,32 @@ class Purlfy extends EventTarget {
                     logFunc("Error visiting URL:", e);
                     break;
                 }
-                if (r.status >= 300 && r.status < 400 && r.headers.has("location")) {
+                if (
+                    r.status >= 300 &&
+                    r.status < 400 &&
+                    r.headers.has("location")
+                ) {
                     logFunc("Visit mode, but got redirected to:", r.url);
                     urlObj = new URL(r.headers.get("location"), urlObj.href);
-                } else if (r.url !== urlObj.href) { // In case `redirect: manual` doesn't work
+                } else if (r.url !== urlObj.href) {
+                    // In case `redirect: manual` doesn't work
                     logFunc("Visit mode, but got redirected to:", r.url);
                     urlObj = new URL(r.url, urlObj.href);
                 } else {
-                    const dest = Purlfy.#applyActs(html, rule.acts?.length ? rule.acts : [String.raw`regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`], logFunc);
-                    if (dest && URL.canParse(dest, urlObj.href)) { // Valid URL
+                    const dest = Purlfy.#applyActs(
+                        html,
+                        rule.acts?.length
+                            ? rule.acts
+                            : [
+                                  String.raw`regex:https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`,
+                              ],
+                        logFunc,
+                    );
+                    if (dest && URL.canParse(dest, urlObj.href)) {
+                        // Valid URL
                         urlObj = new URL(dest, urlObj.href);
-                    } else { // Invalid URL
+                    } else {
+                        // Invalid URL
                         logFunc("Invalid URL:", dest);
                         break;
                     }
@@ -502,7 +578,10 @@ class Purlfy extends EventTarget {
                     break;
                 }
                 try {
-                    const lambda = typeof rule.lambda === "string" ? new Purlfy.#AsyncFunction("url", rule.lambda) : rule.lambda;
+                    const lambda =
+                        typeof rule.lambda === "string"
+                            ? new Purlfy.#AsyncFunction("url", rule.lambda)
+                            : rule.lambda;
                     rule.lambda = lambda; // "Cache" the compiled lambda function
                     urlObj = await lambda(urlObj);
                     shallContinue = rule.continue ?? true;
@@ -517,7 +596,9 @@ class Purlfy extends EventTarget {
             }
         }
         const paramsCntAfter = urlObj.searchParams.size;
-        increment.param += (["white", "black"].includes(mode)) ? (paramsCntBefore - paramsCntAfter) : 0;
+        increment.param += ["white", "black"].includes(mode)
+            ? paramsCntBefore - paramsCntAfter
+            : 0;
         increment.char += Math.max(lengthBefore - urlObj.href.length, 0); // Prevent negative char count
         if (urlObj.href === originalUrl) {
             shallContinue = false; // Overwrite shallContinue if URL has not been changed
@@ -537,52 +618,58 @@ class Purlfy extends EventTarget {
         let iteration = 0;
         let urlObj;
         this.#log("Purifying URL:", originalUrl);
-        const optionalLocation = typeof location !== 'undefined' ? location.href : undefined;
+        const optionalLocation =
+            typeof location !== "undefined" ? location.href : undefined;
         if (originalUrl && URL.canParse(originalUrl, optionalLocation)) {
             urlObj = new URL(originalUrl, optionalLocation);
         } else {
             this.#log(`Cannot parse URL ${originalUrl}`);
             return {
                 url: originalUrl,
-                rule: "N/A"
-            }
+                rule: "N/A",
+            };
         }
         while (shallContinue && iteration++ < this.maxIterations) {
             const logi = (...args) => this.#log(`[#${iteration}]`, ...args);
             const protocol = urlObj.protocol;
-            if (protocol !== "http:" && protocol !== "https:") { // Not a valid HTTP URL
+            if (protocol !== "http:" && protocol !== "https:") {
+                // Not a valid HTTP URL
                 logi(`Not a HTTP URL: ${urlObj.href}`);
                 break;
             }
             const hostAndPath = urlObj.host + urlObj.pathname;
-            const parts = hostAndPath.split("/").filter(part => part !== "");
+            const parts = hostAndPath.split("/").filter((part) => part !== "");
             const rule = this.#matchRule(parts);
-            if (!rule) { // No matching rule found
+            if (!rule) {
+                // No matching rule found
                 logi(`No matching rule found for ${urlObj.href}.`);
                 break;
             }
             firstRule ??= rule;
             logi(`Matching rule: ${rule.description} by ${rule.author}`);
             let singleIncrement; // Incremental statistics for the current iteration
-            [urlObj, shallContinue, singleIncrement] = await this.#applyRule(urlObj, rule, logi);
+            [urlObj, shallContinue, singleIncrement] = await this.#applyRule(
+                urlObj,
+                rule,
+                logi,
+            );
             for (const [key, value] of Object.entries(singleIncrement)) {
                 increment[key] += value;
             }
             logi("Purified URL:", urlObj.href);
         }
-        if (firstRule && originalUrl !== urlObj.href) { // Increment statistics only if a rule was applied and URL has been changed
+        if (firstRule && originalUrl !== urlObj.href) {
+            // Increment statistics only if a rule was applied and URL has been changed
             increment.url++;
             this.#incrementStatistics(increment);
         }
         return {
             url: urlObj.href,
-            rule: firstRule ? `${firstRule.description} by ${firstRule.author}` : "N/A"
+            rule: firstRule
+                ? `${firstRule.description} by ${firstRule.author}`
+                : "N/A",
         };
     }
 }
 
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = Purlfy; // Export for Node.js
-} else {
-    this.Purlfy = Purlfy; // Export for browser
-}
+export default Purlfy;

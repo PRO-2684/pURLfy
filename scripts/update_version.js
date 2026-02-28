@@ -3,19 +3,22 @@
 // to the new version number.
 // And then `git add purlfy.js`.
 
-const fs = require('fs');
-const { exec } = require('child_process');
-const package = require('../package.json');
+// const fs = require('fs');
+// const { exec } = require('child_process');
+// const package = require('../package.json');
+import fs from "fs";
+import { exec } from "child_process";
+import packageJson from "../package.json" with { type: "json" };
 const purlfyPath = "./src/purlfy.js";
 
-const version = package.version;
-const data = fs.readFileSync(purlfyPath, 'utf8');
+const version = packageJson.version;
+const data = fs.readFileSync(purlfyPath, "utf8");
 const result = data.replace(/return "\d+\.\d+\.\d+";/, `return "${version}";`);
-fs.writeFileSync(purlfyPath, result, 'utf8');
+fs.writeFileSync(purlfyPath, result, "utf8");
 console.log(`Updated version to ${version}`);
 
-console.log('Adding purlfy.js to git...');
-exec('git add purlfy.js', (err, stdout, stderr) => {
+console.log("Adding purlfy.js to git...");
+exec("git add purlfy.js", (err, stdout, stderr) => {
     if (err) {
         console.error(err);
         return;

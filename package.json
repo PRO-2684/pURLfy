@@ -1,37 +1,38 @@
 {
-  "name": "purlfy",
-  "version": "0.3.11",
-  "description": "The ultimate URL purifier.",
-  "main": "purlfy.js",
-  "scripts": {
-    "test": "node ./scripts/test.js",
-    "prepare": "",
-    "version": "node ./scripts/update_version.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PRO-2684/pURLfy.git"
-  },
-  "keywords": [
-    "purifier",
-    "url-cleaning",
-    "purlfy"
-  ],
-  "files": [
-    "images",
-    "scripts",
-    "purlfy.js",
-    "LICENSE",
-    "README_zh.md",
-    "README.md"
-  ],
-  "author": "PRO-2684",
-  "license": "GPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/PRO-2684/pURLfy/issues"
-  },
-  "homepage": "https://github.com/PRO-2684/pURLfy#readme",
-  "devDependencies": {
-    "wrangler": "^4.39.0"
-  }
+    "name": "purlfy",
+    "version": "0.3.11",
+    "description": "The ultimate URL purifier.",
+    "main": "purlfy.js",
+    "type": "module",
+    "scripts": {
+        "test": "node ./scripts/test.js",
+        "prepare": "",
+        "version": "node ./scripts/update_version.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PRO-2684/pURLfy.git"
+    },
+    "keywords": [
+        "purifier",
+        "url-cleaning",
+        "purlfy"
+    ],
+    "files": [
+        "images",
+        "scripts",
+        "purlfy.js",
+        "LICENSE",
+        "README_zh.md",
+        "README.md"
+    ],
+    "author": "PRO-2684",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+        "url": "https://github.com/PRO-2684/pURLfy/issues"
+    },
+    "homepage": "https://github.com/PRO-2684/pURLfy#readme",
+    "devDependencies": {
+        "wrangler": "^4.39.0"
+    }
 }
