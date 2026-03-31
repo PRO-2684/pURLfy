@@ -1,8 +1,8 @@
 {
     "name": "purlfy",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "description": "The ultimate URL purifier.",
-    "main": "purlfy.js",
+    "main": "src/purlfy.js",
     "type": "module",
     "scripts": {
         "test": "node ./scripts/test.js",
@@ -19,9 +19,7 @@
         "purlfy"
     ],
     "files": [
-        "images",
-        "scripts",
-        "purlfy.js",
+        "src/purlfy.js",
         "LICENSE",
         "README_zh.md",
         "README.md"
