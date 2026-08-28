@@ -32,6 +32,8 @@ For ES modules, import pURLfy normally:
 import Purlfy from "purlfy";
 ```
 
+<details><summary>For UserScripts</summary>
+
 For UserScripts, declare the ESM file as a resource:
 
 ```js
@@ -42,21 +44,29 @@ For UserScripts, declare the ESM file as a resource:
 Then import its resource URL directly:
 
 ```js
-const { default: Purlfy } = await import(
-    await GM.getResourceUrl("purlfy"),
-);
+const { default: Purlfy } = await import(await GM.getResourceUrl("purlfy"));
 ```
 
+You can also use `GM_getResourceURL` to replace `GM.getResourceUrl`.
+
+</details>
+
 ```js
-const purifier = new Purlfy({ // Instantiate a Purlfy object
+const purifier = new Purlfy({
+    // Instantiate a Purlfy object
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.4.x/<ruleset>.min.json")).json(); // Rules
+const rules = await (
+    await fetch(
+        "https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.4.x/<ruleset>.min.json",
+    )
+).json(); // Rules
 // You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.4.x/<ruleset>.min.json
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(rules, additionalRules); // Import rules
-purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
+purifier.addEventListener("statisticschange", (e) => {
+    // Add an event listener for statistics change
     console.log("Statistics increment:", e.detail); // Only available in platforms that support `CustomEvent`
     console.log("Current statistics:", purifier.getStatistics());
 });
@@ -137,7 +147,7 @@ Community-contributed rulesets are hosted on GitHub, and you can find them at [p
             "description": "<description>",
             "mode": "<mode>",
             // Other parameters
-            "author": "<author>"
+            "author": "<author>",
         },
         // ...
     },
@@ -154,7 +164,7 @@ Formal definition of the format can be found at [`ruleset.schema.json`](https://
 - The basic behavior is like paths on Unix file systems.
     - If not ending with `/`, its value will be treated as a [rule](#-a-single-rule).
     - If ending with `/`, there's more paths under it, like "folders" (theoretically, you can nest infinitely)
-    - `/` is not allowed in the *middle* of `<domain>` or `<path>`.
+    - `/` is not allowed in the _middle_ of `<domain>` or `<path>`.
 - Note that if it starts with `/`, it will be treated as a RegExp pattern.
     - For example, `/^.+\.example\.com$` will match all subdomains of `example.com`, and `/^\d+$` will match a part of path that contains only digits.
     - Do remember to escape `\`, `.` etc in JSON strings.
@@ -177,27 +187,28 @@ A simple example with comments showing the URLs that can be matched:
                 "page": {
                     // The rule here will match "example.com/path/to/page"
                 },
-                "/^\\d+$": { // Remember to escape `\`
+                "/^\\d+$": {
+                    // Remember to escape `\`
                     // The rule here will match all paths under "example.com/path/to/" that are composed of digits
                 },
                 "": {
                     // The rule here will match "example.com/path/to", excluding "page" and digits under it
-                }
+                },
             },
             "": {
                 // The rule here will match "example.com/path", excluding "to" under it
-            }
+            },
         },
         "": {
             // The rule here will match "example.com", excluding "path" under it
-        }
+        },
     },
     "example.org": {
         // The rule here will match every path under "example.org"
     },
     "": {
         // Fallback: this rule will be used for all paths that are not matched
-    }
+    },
 }
 ```
 
@@ -206,23 +217,27 @@ Here's an **erroneous example**:
 ```jsonc
 {
     "example.com/": {
-        "path/": { // Path ending with `/` will be treated as a "directory", thus you should remove the trailing `/`
+        "path/": {
+            // Path ending with `/` will be treated as a "directory", thus you should remove the trailing `/`
             // Attempting to match "example.com/path"
-        }
+        },
     },
-    "example.org": { // Path not ending with `/` will be treated as a rule, thus you should add a trailing `/`
+    "example.org": {
+        // Path not ending with `/` will be treated as a rule, thus you should add a trailing `/`
         "page": {
             // Attempting to match "example.org/page"
-        }
+        },
     },
     "example.net/": {
-        "path/to/page": { // Can't contain `/` in the middle - you should nest them
+        "path/to/page": {
+            // Can't contain `/` in the middle - you should nest them
             // Attempting to match "example.net/path/to/page"
         },
-        "/^\d+$": { // `\d` won't parse correctly in JSON strings, so use `\\d` instead
+        "/^\d+$": {
+            // `\d` won't parse correctly in JSON strings, so use `\\d` instead
             // Attempting to match all paths under "example.net/" that are composed of digits
-        }
-    }
+        },
+    },
 }
 ```
 
@@ -235,48 +250,48 @@ Paths not ending with `/` will be treated as a single rule, and there's multiple
     "description": "<Rule Description>",
     "mode": "<Mode>",
     // Mode-specific parameters
-    "author": "<Author>"
+    "author": "<Author>",
 }
 ```
 
 This table shows supported parameters for each mode:
 
 | Param\Mode | `white` | `black` | `param` | `regex` | `redirect` | `visit` | `lambda` |
-| ---------- | -- | --- | -- | --- | -- | --- | -- |
-| `std`      | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `acts`     | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| ~~`ua`~~   | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| `headers`  | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| ---------- | ------- | ------- | ------- | ------- | ---------- | ------- | -------- |
+| `std`      | ❌      | ✅      | ❌      | ❌      | ❌         | ❌      | ❌       |
+| `params`   | ✅      | ✅      | ✅      | ❌      | ❌         | ❌      | ❌       |
+| `acts`     | ❌      | ❌      | ✅      | ✅      | ❌         | ✅      | ❌       |
+| `regex`    | ❌      | ❌      | ❌      | ✅      | ❌         | ❌      | ❌       |
+| `replace`  | ❌      | ❌      | ❌      | ✅      | ❌         | ❌      | ❌       |
+| ~~`ua`~~   | ❌      | ❌      | ❌      | ❌      | ✅         | ✅      | ❌       |
+| `headers`  | ❌      | ❌      | ❌      | ❌      | ✅         | ✅      | ❌       |
+| `lambda`   | ❌      | ❌      | ❌      | ❌      | ❌         | ❌      | ✅       |
+| `continue` | ❌      | ❌      | ✅      | ✅      | ✅         | ✅      | ✅       |
 
 #### 🟢 Whitelist Mode `white`
 
-| Param | Type | Default |
-| --- | --- | --- |
+| Param    | Type       | Default  |
+| -------- | ---------- | -------- |
 | `params` | `string[]` | Required |
 
 Under Whitelist mode, only the parameters specified in `params` will be kept, and others will be removed. Usually this is the most commonly used mode.
 
 #### 🔴 Blacklist Mode `black`
 
-| Param | Type | Default |
-| --- | --- | --- |
+| Param    | Type       | Default  |
+| -------- | ---------- | -------- |
 | `params` | `string[]` | Required |
-| `std` | `Boolean` | `false` |
+| `std`    | `Boolean`  | `false`  |
 
 Under Blacklist mode, the parameters specified in `params` will be removed, and others will be kept. `std` is for controlling whether the URL search string shall be deemed standard. Only if it is `true` or the URL search string is indeed standard will the URL be processed.
 
 #### 🟤 Specific Parameter Mode `param`
 
-| Param | Type | Default |
-| --- | --- | --- |
-| `params` | `string[]` | Required |
-| `acts`   | `string[]` | `["url"]` |
-| `continue` | `Boolean` | `true` |
+| Param      | Type       | Default   |
+| ---------- | ---------- | --------- |
+| `params`   | `string[]` | Required  |
+| `acts`     | `string[]` | `["url"]` |
+| `continue` | `Boolean`  | `true`    |
 
 Under Specific Parameter mode, pURLfy will:
 
@@ -287,12 +302,12 @@ Under Specific Parameter mode, pURLfy will:
 
 #### 🟣 Regex Mode `regex`
 
-| Param | Type | Default |
-| --- | --- | --- |
-| `acts` | `string[]` | `[]` |
-| `regex` | `string[]` | Required |
-| `replace` | `string[]` | Required |
-| `continue` | `Boolean` | `true` |
+| Param      | Type       | Default  |
+| ---------- | ---------- | -------- |
+| `acts`     | `string[]` | `[]`     |
+| `regex`    | `string[]` | Required |
+| `replace`  | `string[]` | Required |
+| `continue` | `Boolean`  | `true`   |
 
 Under Regex mode, pURLfy will, for each `regex`-`replace` pair:
 
@@ -307,11 +322,11 @@ If you'd like to learn more about the syntax of the "replacement string", please
 > [!CAUTION]
 > For compatibility reasons, the `redirect` mode is disabled by default. Refer to the [API documentation](#-API) for enabling it.
 
-| Param | Type | Default |
-| --- | --- | --- |
-| ~~`ua`~~ | `string` | `undefined` |
-| `headers` | `object` | `{}` |
-| `continue` | `Boolean` | `true` |
+| Param      | Type      | Default     |
+| ---------- | --------- | ----------- |
+| ~~`ua`~~   | `string`  | `undefined` |
+| `headers`  | `object`  | `{}`        |
+| `continue` | `Boolean` | `true`      |
 
 Under Redirect mode, pURLfy will call constructor parameter `fetch` to get the redirected URL, by firing a `HEAD` request using `headers` as the headers to the matched URL and return the `Location` header or the updated `response.url`. If `continue` is not set to `false`, the new URL will be purified again.
 
@@ -322,12 +337,12 @@ Note: `ua` parameter will be deprecated in the future, and you should use `heade
 > [!CAUTION]
 > For compatibility reasons, the `redirect` mode is disabled by default. Refer to the [API documentation](#-API) for enabling it.
 
-| Param | Type | Default |
-| --- | --- | --- |
-| ~~`ua`~~ | `string` | `undefined` |
-| `headers` | `object` | `{}` |
-| `acts` | `string[]` | `["regex:<url_pattern>"]` |
-| `continue` | `Boolean` | `true` |
+| Param      | Type       | Default                   |
+| ---------- | ---------- | ------------------------- |
+| ~~`ua`~~   | `string`   | `undefined`               |
+| `headers`  | `object`   | `{}`                      |
+| `acts`     | `string[]` | `["regex:<url_pattern>"]` |
+| `continue` | `Boolean`  | `true`                    |
 
 Under Visit mode, pURLfy will visit the URL with `headers` as the headers, and if the URL has not beed redirected, it will call the [processors](#-processors) specified in `acts` in order (`<url_pattern>` is `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`). The initial input to `acts` is of type `string`, i.e. the text returned by visiting the URL. If the URL has been redirected, the redirected URL will be returned. If `continue` is not set to `false`, the new URL will be purified again.
 
@@ -338,10 +353,10 @@ Note: `ua` parameter will be deprecated in the future, and you should use `heade
 > [!CAUTION]
 > For security reasons, the `lambda` mode is disabled by default. If you **trust the rules provider**, refer to the [API documentation](#-API) for enabling it.
 
-| Param | Type | Default |
-| --- | --- | --- |
-| `lambda` | `string` | Required |
-| `continue` | `Boolean` | `true` |
+| Param      | Type      | Default  |
+| ---------- | --------- | -------- |
+| `lambda`   | `string`  | Required |
+| `continue` | `Boolean` | `true`   |
 
 Under Lambda mode, pURLfy will try to execute the lambda function specified in `lambda` and use the result as the new URL. The function shall be async, and its body should accept a single `URL` parameter `url` and return a new `URL` object. For example:
 
@@ -352,7 +367,7 @@ Under Lambda mode, pURLfy will try to execute the lambda function specified in `
         "mode": "lambda",
         "lambda": "url.searchParams.delete('key'); return url;",
         "continue": false,
-        "author": "PRO-2684"
+        "author": "PRO-2684",
     },
     // ...
 }
