@@ -32,31 +32,41 @@
 import Purlfy from "purlfy";
 ```
 
+<details><summary>在 UserScript 中</summary>
+
 在 UserScript 中，请先将 ESM 文件声明为资源：
 
 ```js
-// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.js
+// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@v<version>/src/purlfy.min.js
 // @grant GM.getResourceUrl
 ```
 
 然后直接导入资源 URL：
 
 ```js
-const { default: Purlfy } = await import(
-    await GM.getResourceUrl("purlfy"),
-);
+const { default: Purlfy } = await import(await GM.getResourceUrl("purlfy"));
 ```
 
+亦可使用 `GM_getResourceURL` 代替 `GM.getResourceUrl`。
+
+</details>
+
 ```js
-const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
+const purifier = new Purlfy({
+    // 实例化一个 Purlfy 对象
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<ruleset>.json")).json(); // 规则
-// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<ruleset>.json
+const rules = await (
+    await fetch(
+        "https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules/<ruleset>.min.json",
+    )
+).json(); // 规则
+// 你也可以使用 GitHub raw 链接来获取真正的最新规则: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/main/<ruleset>.min.json
 const additionalRules = {}; // 你也可以添加自己的规则
 purifier.importRules(rules, additionalRules); // 导入规则
-purifier.addEventListener("statisticschange", e => { // 添加统计数据变化的事件监听器
+purifier.addEventListener("statisticschange", (e) => {
+    // 添加统计数据变化的事件监听器
     console.log("Statistics increment:", e.detail); // 只有在支持 `CustomEvent` 的环境下才能使用
     console.log("Current statistics:", purifier.getStatistics());
 });
@@ -137,7 +147,7 @@ new Purlfy({
             "description": "<规则描述>",
             "mode": "<模式>",
             // 其它参数
-            "author": "<作者>"
+            "author": "<作者>",
         },
         // ...
     },
@@ -154,7 +164,7 @@ new Purlfy({
 - 基础行为与 Unix 文件系统路径类似
     - 若不以 `/` 结尾，表示其值就是一条 [规则](#-单条规则)
     - 若以 `/` 结尾，表示其下有更多子路径，可以与“文件夹”类比 (理论上可以无限嵌套)
-    - `<domain>`, `<path>` *中间* 不可以含有 `/`
+    - `<domain>`, `<path>` _中间_ 不可以含有 `/`
 - 若以 `/` 开头，将会被认为是正则表达式。
     - 例如 `/^.+\.example\.com$` 可以匹配 `example.com` 的所有子域名，`/^\d+$` 可以匹配一段只包含数字的路径
     - 请别忘记在 JSON 中转义特殊字符，例如 `\`, `.` 等
@@ -177,52 +187,57 @@ new Purlfy({
                 "page": {
                     // 这里的规则会匹配 "example.com/path/to/page"
                 },
-                "/^\\d+$": { // 注意转义 `\`
+                "/^\\d+$": {
+                    // 注意转义 `\`
                     // 这里的规则会匹配 "example.com/path/to/" 下的所有由数字组成的路径
                 },
                 "": {
                     // 这里的规则会匹配 "example.com/path/to" 除 "page" 和数字路径以外的所有子路径
-                }
+                },
             },
             "": {
                 // 这里的规则会匹配 "example.com/path" 除 "to" 以外的所有子路径
-            }
+            },
         },
         "": {
             // 这里的规则会匹配 "example.com" 除 "path" 以外的所有子路径
-        }
+        },
     },
     "example.org": {
         // 这里的规则会匹配 "example.org" 的所有路径
     },
     "": {
         // Fallback: 所有未匹配到的路径都会使用这里的规则
-    }
+    },
 }
 ```
 
-以下是 ***错误示范***:
+以下是 _**错误示范**_:
 
 ```jsonc
 {
     "example.com/": {
-        "path/": { // 以 `/` 结尾的会被认为下面有子路径，正确做法是移除末尾的 `/`
+        "path/": {
+            // 以 `/` 结尾的会被认为下面有子路径，正确做法是移除末尾的 `/`
             // 尝试匹配 "example.com/path" 的规则
-        }
+        },
     },
-    "example.org": { // 不以 `/` 结尾的会被认为是一条规则，正确做法是末尾加上 `/`
+    "example.org": {
+        // 不以 `/` 结尾的会被认为是一条规则，正确做法是末尾加上 `/`
         "page": {
             // 尝试匹配 "example.org/page" 的规则
-        }
+        },
     },
     "example.net/": {
-        "path/to/page": { // 中间不可以含有 `/`，正确做法是嵌套
+        "path/to/page": {
+            // 中间不可以含有 `/`，正确做法是嵌套
             // 尝试匹配 "example.net/path/to/page" 的规则
         },
-        "/^\d+$": { // 在 JSON 中 `\d` 无法被正确解析，正确做法是使用 `\\d`
+        "/^\d+$": {
+            // 在 JSON 中 `\d` 无法被正确解析，正确做法是使用 `\\d`
             // 尝试匹配 "example.net" 下所有由数字组成的路径
-        }
-    }
+        },
+    },
 }
 ```
 
@@ -235,48 +250,48 @@ new Purlfy({
     "description": "<规则描述>",
     "mode": "<模式>",
     // 与模式相关的参数
-    "author": "<作者>"
+    "author": "<作者>",
 }
 ```
 
 下面这张表格展示了每种模式支持的参数:
 
-| 参数\模式 | `white` | `black` | `param` | `regex` | `redirect` | `visit` | `lambda` |
-| ---------- | -- | --- | -- | --- | -- | --- | -- |
-| `std`      | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| `params`   | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `acts`     | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| `regex`    | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| `replace`  | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| ~~`ua`~~   | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| `headers`  | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| `lambda`   | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| `continue` | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 参数\模式  | `white` | `black` | `param` | `regex` | `redirect` | `visit` | `lambda` |
+| ---------- | ------- | ------- | ------- | ------- | ---------- | ------- | -------- |
+| `std`      | ❌      | ✅      | ❌      | ❌      | ❌         | ❌      | ❌       |
+| `params`   | ✅      | ✅      | ✅      | ❌      | ❌         | ❌      | ❌       |
+| `acts`     | ❌      | ❌      | ✅      | ✅      | ❌         | ✅      | ❌       |
+| `regex`    | ❌      | ❌      | ❌      | ✅      | ❌         | ❌      | ❌       |
+| `replace`  | ❌      | ❌      | ❌      | ✅      | ❌         | ❌      | ❌       |
+| ~~`ua`~~   | ❌      | ❌      | ❌      | ❌      | ✅         | ✅      | ❌       |
+| `headers`  | ❌      | ❌      | ❌      | ❌      | ✅         | ✅      | ❌       |
+| `lambda`   | ❌      | ❌      | ❌      | ❌      | ❌         | ❌      | ✅       |
+| `continue` | ❌      | ❌      | ✅      | ✅      | ✅         | ✅      | ✅       |
 
 #### 🟢 白名单模式 `white`
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| `params` | `string[]` | 必须 |
+| 参数     | 类型       | 默认值 |
+| -------- | ---------- | ------ |
+| `params` | `string[]` | 必须   |
 
 白名单模式下，只有在 `params` 中指定的查询参数才会被保留，原网址中的其余查询参数会被删除。通常来说这是最常用的模式。
 
 #### 🔴 黑名单模式 `black`
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| `params` | `string[]` | 必须 |
-| `std` | `Boolean` | `false` |
+| 参数     | 类型       | 默认值  |
+| -------- | ---------- | ------- |
+| `params` | `string[]` | 必须    |
+| `std`    | `Boolean`  | `false` |
 
 黑名单模式下，在 `params` 中指定的查询参数将会被删除，原网址中的其余查询参数会被保留。`std` 控制是否假定 URL 的查询参数是符合标准的，只有它被设为为 `true` 或 URL 的查询参数确实符合标准时才会按规则处理此网址。
 
 #### 🟤 特定参数模式 `param`
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| `params` | `string[]` | 必须 |
-| `acts` | `string[]` | `["url"]` |
-| `continue` | `Boolean` | `true` |
+| 参数       | 类型       | 默认值    |
+| ---------- | ---------- | --------- |
+| `params`   | `string[]` | 必须      |
+| `acts`     | `string[]` | `["url"]` |
+| `continue` | `Boolean`  | `true`    |
 
 取特定参数模式下，pURLfy 会:
 
@@ -287,12 +302,12 @@ new Purlfy({
 
 #### 🟣 正则模式 `regex`
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| `acts` | `string[]` | `[]` |
-| `regex` | `string[]` | 必须 |
-| `replace` | `string[]` | 必须 |
-| `continue` | `Boolean` | `true` |
+| 参数       | 类型       | 默认值 |
+| ---------- | ---------- | ------ |
+| `acts`     | `string[]` | `[]`   |
+| `regex`    | `string[]` | 必须   |
+| `replace`  | `string[]` | 必须   |
+| `continue` | `Boolean`  | `true` |
 
 正则模式下，pURLfy 会对每一 `regex`-`replace` 对进行:
 
@@ -307,11 +322,11 @@ new Purlfy({
 > [!CAUTION]
 > 出于兼容性考虑，此模式默认禁用。请参照 [API 文档](#-API) 开启此模式。
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| ~~`ua`~~ | `string` | `undefined` |
-| `headers` | `object` | `{}` |
-| `continue` | `Boolean` | `true` |
+| 参数       | 类型      | 默认值      |
+| ---------- | --------- | ----------- |
+| ~~`ua`~~   | `string`  | `undefined` |
+| `headers`  | `object`  | `{}`        |
+| `continue` | `Boolean` | `true`      |
 
 重定向模式下，pURLfy 会调用构造时的参数 `fetch` 使用 `headers` 头发送 `HEAD` 请求并返回 `Location` 标头或更新的 `response.url` 作为重定向后的 URL。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
@@ -322,12 +337,12 @@ new Purlfy({
 > [!CAUTION]
 > 出于兼容性考虑，此模式默认禁用。请参照 [API 文档](#-API) 开启此模式。
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| ~~`ua`~~ | `string` | `undefined` |
-| `headers` | `object` | `{}` |
-| `acts` | `string[]` | `["regex:<url_pattern>"]` |
-| `continue` | `Boolean` | `true` |
+| 参数       | 类型       | 默认值                    |
+| ---------- | ---------- | ------------------------- |
+| ~~`ua`~~   | `string`   | `undefined`               |
+| `headers`  | `object`   | `{}`                      |
+| `acts`     | `string[]` | `["regex:<url_pattern>"]` |
+| `continue` | `Boolean`  | `true`                    |
 
 在访问模式下，pURLfy 会使用 `headers` 头访问 URL，若网址未被重定向，则按序调用 `acts` 中指定的 [处理器](#-处理器) 来获取页面中的链接 (`<url_pattern>` 为 `https?:\/\/.(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?!&\/\/=]*)`)。`acts` 的首个输入为 `string`，即访问当前 URL 的返回文本。若网址已重定向，则返回重定向后网址。若 `continue` 未被设置为 `false`，则再次净化新的 URL。
 
@@ -338,9 +353,9 @@ new Purlfy({
 > [!CAUTION]
 > 出于安全考虑，此模式默认禁用。若您 **信任规则来源**，请参照 [API 文档](#-API) 开启此模式。
 
-| 参数 | 类型 | 默认值 |
-| --- | --- | --- |
-| `lambda` | `string` | 必须 |
+| 参数       | 类型      | 默认值 |
+| ---------- | --------- | ------ |
+| `lambda`   | `string`  | 必须   |
 | `continue` | `Boolean` | `true` |
 
 匿名函数模式下，pURLfy 会尝试执行 `lambda` 字段中指定的函数体，并将其返回值作为新的 URL。此函数是异步的，其函数体应接受一个类型为 `URL` 的参数 `url`，并返回一个新的 `URL` 对象。例如如下规则：
@@ -352,7 +367,7 @@ new Purlfy({
         "mode": "lambda",
         "lambda": "url.searchParams.delete('key'); return url;",
         "continue": false,
-        "author": "PRO-2684"
+        "author": "PRO-2684",
     },
     // ...
 }
