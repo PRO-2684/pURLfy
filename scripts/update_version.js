@@ -1,4 +1,4 @@
-// Modify the version number at `purlfy.js` file:
+// Modify the version number in `purlfy.global.js`:
 // `return "0.3.5";`
 // to the new version number.
 // And then add the file to git, commit with message "Bump version to x.y.z", and tag the commit with "vX.Y.Z" where X.Y.Z is the new version number.
@@ -6,7 +6,7 @@
 import fs from "fs";
 import { exec } from "child_process";
 import packageJson from "../package.json" with { type: "json" };
-const purlfyPath = "./src/purlfy.js";
+const purlfyPath = "./src/purlfy.global.js";
 
 const version = packageJson.version;
 const data = fs.readFileSync(purlfyPath, "utf8");

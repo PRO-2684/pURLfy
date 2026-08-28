@@ -27,7 +27,8 @@
 访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，体验我们的 [Tampermonkey 脚本](https://greasyfork.org/scripts/492480)，或者直接 `node src/cli.js <url[]> [<options>]` 来净化一系列 URL (更多信息请参考脚本注释)。
 
 ```js
-// 通过某种方式从 https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.min.js 导入 `Purlfy` 类
+// ESM: import Purlfy from "purlfy";
+// UserScript: @require https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.global.js
 const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     fetchEnabled: true,
     lambdaEnabled: true,

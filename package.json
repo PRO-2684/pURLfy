@@ -1,11 +1,11 @@
 {
     "name": "purlfy",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "The ultimate URL purifier.",
     "main": "src/purlfy.js",
     "type": "module",
     "scripts": {
-        "test": "node ./scripts/test.js",
+        "test": "node ./scripts/test-userscript.js && node ./scripts/test.js",
         "prepare": "",
         "version": "node ./scripts/update_version.js"
     },
@@ -20,6 +20,7 @@
     ],
     "files": [
         "src/purlfy.js",
+        "src/purlfy.global.js",
         "LICENSE",
         "README_zh.md",
         "README.md"
