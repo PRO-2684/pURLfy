@@ -35,7 +35,7 @@ import Purlfy from "purlfy";
 For UserScripts, declare the ESM file as a resource:
 
 ```js
-// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.js
+// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@v<version>/src/purlfy.min.js
 // @grant GM.getResourceUrl
 ```
 
@@ -52,8 +52,8 @@ const purifier = new Purlfy({ // Instantiate a Purlfy object
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.4.x/<ruleset>.json")).json(); // Rules
-// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.4.x/<ruleset>.json
+const rules = await (await fetch("https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy-rules@core-0.4.x/<ruleset>.min.json")).json(); // Rules
+// You may also use GitHub raw link for really latest rules: https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/core-0.4.x/<ruleset>.min.json
 const additionalRules = {}; // You can also add your own rules
 purifier.importRules(rules, additionalRules); // Import rules
 purifier.addEventListener("statisticschange", e => { // Add an event listener for statistics change
