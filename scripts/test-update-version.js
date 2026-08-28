@@ -16,7 +16,7 @@ try {
         '{"version":"0.0.0"}\n',
     );
     fs.writeFileSync(
-        path.join(workspace, "src", "purlfy.global.js"),
+        path.join(workspace, "src", "purlfy.js"),
         'static get version() { return "0.0.0"; }\n',
     );
     run("git", ["init"]);
@@ -43,7 +43,7 @@ try {
     );
     assert.match(
         fs.readFileSync(
-            path.join(workspace, "src", "purlfy.global.js"),
+            path.join(workspace, "src", "purlfy.js"),
             "utf8",
         ),
         /return "1\.2\.3";/,

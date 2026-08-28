@@ -26,9 +26,28 @@
 
 访问我们的 [示例页面](https://pro-2684.github.io/?page=purlfy)，体验我们的 [Tampermonkey 脚本](https://greasyfork.org/scripts/492480)，或者直接 `node src/cli.js <url[]> [<options>]` 来净化一系列 URL (更多信息请参考脚本注释)。
 
+在 ES 模块中，可以正常导入 pURLfy：
+
 ```js
-// ESM: import Purlfy from "purlfy";
-// UserScript: @require https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.global.js
+import Purlfy from "purlfy";
+```
+
+在 UserScript 中，请先将 ESM 文件声明为资源：
+
+```js
+// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.js
+// @grant GM.getResourceUrl
+```
+
+然后直接导入资源 URL：
+
+```js
+const { default: Purlfy } = await import(
+    await GM.getResourceUrl("purlfy"),
+);
+```
+
+```js
 const purifier = new Purlfy({ // 实例化一个 Purlfy 对象
     fetchEnabled: true,
     lambdaEnabled: true,

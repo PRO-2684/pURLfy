@@ -26,10 +26,28 @@ Usually, pURLfy is used for purifying URL, including removing redundant tracking
 
 Visit our [demo page](https://purlfy.pro2684.workers.dev/), try out our [Tampermonkey script](https://greasyfork.org/scripts/492480), or simply `node src/cli.js <url[]> [<options>]` to purify a list of URLs (For more information, please refer to the comments in the script).
 
-```js
-// ESM: import Purlfy from "purlfy";
-// UserScript: @require https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.global.js
+For ES modules, import pURLfy normally:
 
+```js
+import Purlfy from "purlfy";
+```
+
+For UserScripts, declare the ESM file as a resource:
+
+```js
+// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@latest/src/purlfy.js
+// @grant GM.getResourceUrl
+```
+
+Then import its resource URL directly:
+
+```js
+const { default: Purlfy } = await import(
+    await GM.getResourceUrl("purlfy"),
+);
+```
+
+```js
 const purifier = new Purlfy({ // Instantiate a Purlfy object
     fetchEnabled: true,
     lambdaEnabled: true,

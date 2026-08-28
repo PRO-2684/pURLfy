@@ -8,7 +8,7 @@ if (!/^\d+\.\d+\.\d+$/.test(version ?? "")) {
 }
 
 const packagePath = "./package.json";
-const purlfyPath = "./src/purlfy.global.js";
+const purlfyPath = "./src/purlfy.js";
 const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 const purlfy = fs.readFileSync(purlfyPath, "utf8");
 const updatedPurlfy = purlfy.replace(
