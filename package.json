@@ -5,9 +5,9 @@
     "main": "src/purlfy.js",
     "type": "module",
     "scripts": {
-        "test": "node ./scripts/test-userscript.js && node ./scripts/test.js",
+        "test": "node ./scripts/test-userscript.js && node ./scripts/test-update-version.js && node ./scripts/test.js",
         "prepare": "",
-        "version": "node ./scripts/update_version.js"
+        "version": "node ./scripts/update-version.js"
     },
     "repository": {
         "type": "git",

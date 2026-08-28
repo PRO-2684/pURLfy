@@ -21,6 +21,5 @@ vm.runInContext(source, context);
 vm.runInContext(source, context);
 
 assert.equal(typeof context.Purlfy, "function");
-assert.equal(context.Purlfy.version, "0.4.2");
 assert.equal(new context.Purlfy({ log: () => {} }).constructor, context.Purlfy);
 console.log("* UserScript entry: ✅");
