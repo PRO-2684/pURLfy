@@ -46,7 +46,13 @@ import Purlfy from "purlfy";
 https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js
 ```
 
-每个 GitHub Release 也会提供可读和最小化的 ESM 构建。
+若要发布到 Greasy Fork，建议添加[子资源完整性校验](https://www.tampermonkey.net/documentation.php?q=sri#api:Subresource_Integrity)：
+
+```text
+https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js#sha256=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+从 Release 页面复制资源的 SHA-256 摘要，并将 `sha256` 后的冒号替换为 `=`。
 
 </details>
 

@@ -46,7 +46,13 @@ This exposes `Purlfy` in the UserScript sandbox. Pin a version instead of using 
 https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js
 ```
 
-Each GitHub Release also provides readable and minified ESM builds.
+If publishing to Greasy Fork, you may want to add [Subresource Integrity checks](https://www.tampermonkey.net/documentation.php?q=sri#api:Subresource_Integrity):
+
+```text
+https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js#sha256=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Copy the asset's SHA-256 digest from the release page, replacing the colon after `sha256` with `=`.
 
 </details>
 
