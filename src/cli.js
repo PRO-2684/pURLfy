@@ -25,7 +25,7 @@ const enabledRules = rulesStr.trim().length
           .split(",")
           .map((rule) => rule.trim())
           .filter(Boolean)
-    : require("../rules/list.json");
+    : (await import("../rules/list.json", { with: { type: "json" } })).default;
 console.log("Enabled rules:", enabledRules);
 console.log("---");
 
@@ -33,7 +33,13 @@ const purifier = new Purlfy({
     fetchEnabled: true,
     lambdaEnabled: true,
 });
-const rules = enabledRules.map((rule) => require(`./rules/${rule}.json`));
+const rules = await Promise.all(
+    enabledRules.map((rule) =>
+        import(`../rules/${rule}.json`, { with: { type: "json" } }).then(
+            (mod) => mod.default,
+        ),
+    ),
+);
 purifier.importRules(...rules);
 for (const url of urls) {
     purifier.purify(url).then((purified) => {
