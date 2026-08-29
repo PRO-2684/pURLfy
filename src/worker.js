@@ -1,7 +1,7 @@
 import Purlfy from "./purlfy.js";
 
 const base =
-    "https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/refs/heads/core-0.3.x/";
+    "https://raw.githubusercontent.com/PRO-2684/pURLfy-rules/refs/heads/core-0.4.x/";
 let purifier = null;
 
 /**
