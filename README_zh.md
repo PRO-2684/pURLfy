@@ -132,7 +132,7 @@ new Purlfy({
 
 你可以在初始化后更改下面的属性，它们将在下次调用 `purify` 时生效。
 
-- `fetchEnabled: Boolean`: 是否启用需要网络的模式 `redirect` 和 `visit`
+- `fetchEnabled: Boolean`: 是否启用需要网络的模式 (`redirect` 和 `visit`)
 - `lambdaEnabled: Boolean`: 是否启用匿名函数模式
 - `maxIterations: Number`: 最大迭代次数
 

@@ -132,7 +132,7 @@ new Purlfy({
 
 You can change these properties after instantiation, and they will take effect for the next call to `purify`.
 
-- `fetchEnabled: Boolean`: Whether the redirect mode is enabled.
+- `fetchEnabled: Boolean`: Enable modes that require network (`redirect` & `visit`).
 - `lambdaEnabled: Boolean`: Whether the lambda mode is enabled.
 - `maxIterations: Number`: Maximum number of iterations.
 
