@@ -76,7 +76,6 @@ purifier.purify("https://example.com/?utm_source=123").then(console.log); // 净
 以下是一些测试链接，你可以尝试使用 pURLfy 净化它们:
 
 - [Google Goto URL](https://www.seroundtable.com/google-search-goto-tracking-41957.html): `https://www.google.com/goto?url=CAESewHrOzAVsPampw8gTQc2LcIMY1pP-6F0U0OhkicyAQxH-R-Rgi2eyOhdMwI1BDecN73ER6ryk_Uw9mM0qlHD9yp1HFrUJx92VG01Zz_5xZlG_RuCb0K6fcGAtdOg-Lk0ZPn9dw2CaZQ34BnPtseTCu5Rq8aWjlXCtjOUOw&ved=2ahUKEwibgOWFw8WWAxUwxTgGHQtTHiUQFnoECDMQAQ`
-- 哔哩哔哩的短链: `https://b23.tv/SI6OEcv`
 - 中规中矩的贴吧分享链接: `https://tieba.baidu.com/p/7989575070?share=none&fr=none&see_lz=none&share_from=none&sfc=none&client_type=none&client_version=none&st=none&is_video=none&unique=none`
 - MC 百科外链: `https://link.mcmod.cn/target/aHR0cHM6Ly9naXRodWIuY29tL3dheTJtdWNobm9pc2UvQmV0dGVyQWR2YW5jZW1lbnRz`
 - 必应的搜索结果: `https://www.bing.com/ck/a?!&&p=de70ef254652193fJmltdHM9MTcxMjYyMDgwMCZpZ3VpZD0wMzhlNjdlMy1mN2I2LTZmMDktMGE3YS03M2JlZjZhMzZlOGMmaW5zaWQ9NTA2Nw&ptn=3&ver=2&hsh=3&fclid=038e67e3-f7b6-6f09-0a7a-73bef6a36e8c&psq=anti&u=a1aHR0cHM6Ly9nby5taWNyb3NvZnQuY29tL2Z3bGluay8_bGlua2lkPTg2ODkyMg&ntb=1`
