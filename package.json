@@ -1,6 +1,6 @@
 {
     "name": "purlfy",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "description": "The ultimate URL purifier.",
     "main": "src/purlfy.js",
     "type": "module",
@@ -35,5 +35,5 @@
         "terser": "^5.51.2",
         "wrangler": "^4.39.0"
     },
-    "packageManager": "pnpm@10.33.0"
+    "packageManager": "pnpm@11.24.0"
 }
