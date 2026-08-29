@@ -476,6 +476,10 @@ class Purlfy extends EventTarget {
                     logFunc("Redirect mode is disabled.");
                     break;
                 }
+                if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
+                    logFunc("Unsupported protocol for redirect mode:", urlObj.protocol);
+                    break;
+                }
                 const options = {
                     method: "HEAD",
                     redirect: "manual",
@@ -502,7 +506,12 @@ class Purlfy extends EventTarget {
                 }
                 if (dest && URL.canParse(dest, urlObj.href)) {
                     const prevUrl = urlObj.href;
-                    urlObj = new URL(dest, urlObj.href);
+                    const destObj = new URL(dest, urlObj.href);
+                    if (destObj.protocol !== "http:" && destObj.protocol !== "https:") {
+                        logFunc("Unsupported redirect destination protocol:", destObj.protocol);
+                        break;
+                    }
+                    urlObj = destObj;
                     if (urlObj.href === prevUrl) {
                         // No redirection
                         logFunc("No redirection made.");
@@ -519,6 +528,10 @@ class Purlfy extends EventTarget {
                 // Visit mode
                 if (!this.fetchEnabled) {
                     logFunc("Visit mode is disabled.");
+                    break;
+                }
+                if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
+                    logFunc("Unsupported protocol for visit mode:", urlObj.protocol);
                     break;
                 }
                 const options = {
