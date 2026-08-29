@@ -75,6 +75,7 @@ purifier.purify("https://example.com/?utm_source=123").then(console.log); // Pur
 
 Here's a list of test URLs that you can use to test pURLfy:
 
+- [Google Goto URL](https://www.seroundtable.com/google-search-goto-tracking-41957.html): `https://www.google.com/goto?url=CAESewHrOzAVsPampw8gTQc2LcIMY1pP-6F0U0OhkicyAQxH-R-Rgi2eyOhdMwI1BDecN73ER6ryk_Uw9mM0qlHD9yp1HFrUJx92VG01Zz_5xZlG_RuCb0K6fcGAtdOg-Lk0ZPn9dw2CaZQ34BnPtseTCu5Rq8aWjlXCtjOUOw&ved=2ahUKEwibgOWFw8WWAxUwxTgGHQtTHiUQFnoECDMQAQ`
 - Bilibili's short link: `https://b23.tv/wacD0IH`
 - Ordinary Tieba link: `https://tieba.baidu.com/p/7989575070?share=none&fr=none&see_lz=none&share_from=none&sfc=none&client_type=none&client_version=none&st=none&is_video=none&unique=none`
 - MC Wiki's external link: `https://link.mcmod.cn/target/aHR0cHM6Ly9naXRodWIuY29tL3dheTJtdWNobm9pc2UvQmV0dGVyQWR2YW5jZW1lbnRz`
