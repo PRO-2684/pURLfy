@@ -96,7 +96,7 @@ Here's a list of test URLs that you can use to test pURLfy:
 
 ```js
 new Purlfy({
-    fetchEnabled: Boolean, // Enable the redirect mode (default: false)
+    fetchEnabled: Boolean, // Enable modes that require network (redirect & visit) (default: false)
     lambdaEnabled: Boolean, // Enable the lambda mode (default: false)
     maxIterations: Number, // Maximum number of iterations (default: 5)
     statistics: { // Initial statistics

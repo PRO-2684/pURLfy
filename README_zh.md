@@ -96,7 +96,7 @@ purifier.purify("https://example.com/?utm_source=123").then(console.log); // 净
 
 ```js
 new Purlfy({
-    fetchEnabled: Boolean, // 是否启用需要网络的模式 `redirect` 和 `visit` (默认: false)
+    fetchEnabled: Boolean, // 是否启用需要网络的模式 (redirect & visit) (默认: false)
     lambdaEnabled: Boolean, // 是否启用匿名函数模式 (默认: false)
     maxIterations: Number, // 最大迭代次数 (默认: 5)
     statistics: { // 初始统计数据
