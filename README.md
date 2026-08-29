@@ -34,20 +34,19 @@ import Purlfy from "purlfy";
 
 <details><summary>For UserScripts</summary>
 
-For UserScripts, declare the ESM file as a resource:
+For UserScripts, load the classic build from the latest GitHub Release:
 
 ```js
-// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@v<version>/src/purlfy.min.js
-// @grant GM.getResourceUrl
+// @require https://github.com/PRO-2684/pURLfy/releases/latest/download/purlfy.user.min.js
 ```
 
-Then import its resource URL directly:
+This exposes `Purlfy` in the UserScript sandbox. Pin a version instead of using `latest` when reproducible updates matter:
 
-```js
-const { default: Purlfy } = await import(await GM.getResourceUrl("purlfy"));
+```text
+https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js
 ```
 
-You can also use `GM_getResourceURL` to replace `GM.getResourceUrl`.
+Each GitHub Release also provides readable and minified ESM builds.
 
 </details>
 

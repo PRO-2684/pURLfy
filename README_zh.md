@@ -34,20 +34,19 @@ import Purlfy from "purlfy";
 
 <details><summary>在 UserScript 中</summary>
 
-在 UserScript 中，请先将 ESM 文件声明为资源：
+在 UserScript 中，从最新的 GitHub Release 加载经典脚本：
 
 ```js
-// @resource purlfy https://cdn.jsdelivr.net/gh/PRO-2684/pURLfy@v<version>/src/purlfy.min.js
-// @grant GM.getResourceUrl
+// @require https://github.com/PRO-2684/pURLfy/releases/latest/download/purlfy.user.min.js
 ```
 
-然后直接导入资源 URL：
+这会在 UserScript 沙箱中暴露 `Purlfy`。若需要可复现的更新，请固定版本而非使用 `latest`：
 
-```js
-const { default: Purlfy } = await import(await GM.getResourceUrl("purlfy"));
+```text
+https://github.com/PRO-2684/pURLfy/releases/download/v<version>/purlfy.user.min.js
 ```
 
-亦可使用 `GM_getResourceURL` 代替 `GM.getResourceUrl`。
+每个 GitHub Release 也会提供可读和最小化的 ESM 构建。
 
 </details>
 

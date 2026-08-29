@@ -5,7 +5,8 @@
     "main": "src/purlfy.js",
     "type": "module",
     "scripts": {
-        "test": "node ./scripts/test-resource-import.js && node ./scripts/test-update-version.js && node ./scripts/test.js",
+        "build": "node ./scripts/build-release.js",
+        "test": "node ./scripts/test-resource-import.js && node ./scripts/test-release-build.js && node ./scripts/test-update-version.js && node ./scripts/test.js",
         "prepare": "",
         "version": "node ./scripts/update-version.js"
     },
@@ -31,6 +32,7 @@
     },
     "homepage": "https://github.com/PRO-2684/pURLfy#readme",
     "devDependencies": {
+        "terser": "^5.51.2",
         "wrangler": "^4.39.0"
     },
     "packageManager": "pnpm@10.33.0"

@@ -9,12 +9,28 @@ jobs:
   tagged-release:
     name: "Tagged Release"
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: "write"
 
     steps:
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: "actions/checkout@v4"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - uses: "actions/setup-node@v5"
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
+          node-version: "24"
+          cache: "pnpm"
+      - run: "pnpm install --frozen-lockfile"
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
+      - run: "pnpm test"
+      - run: "pnpm build"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes
   npm-publish:
     name: "Publish to NPM"
     runs-on: "ubuntu-latest"

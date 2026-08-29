@@ -1,3 +1,4 @@
 rules
+dist/
 node_modules/
 .wrangler/
